@@ -1,0 +1,31 @@
+# Python virtual environments and caches
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.basedpyright/
+
+# Coverage and build outputs
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Local environment files
+.env
+.env.*
+
+# IDE and editor settings
+.idea/
+.vscode/
+.vs/
+*.code-workspace
+
+# Operating system files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
