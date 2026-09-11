@@ -11,12 +11,15 @@ evaluates that record against a scenario expectation.
 - Fail closed with `DENY` when no rule matches.
 - Produce an execution record and a separate evaluation result.
 - Run three deterministic local scenarios without external services.
+- Compare Random and simplified TraceGuided search on an intentionally vulnerable
+  synthetic fixture.
 
 ## What v0.1 cannot do
 
 This prototype does not run a real AI agent, intercept filesystem or network
 operations, access secrets, provide an operating-system sandbox, integrate with
-MCP or agent frameworks, discover attacks, or provide production security.
+MCP or agent frameworks, discover vulnerabilities in real systems, or provide
+production security.
 
 ## Install
 
@@ -49,6 +52,22 @@ The demo runs these scenarios:
 All values are fixtures. The harness does not read a file or secret and does not
 send a network request.
 
+## Run the synthetic attack-search experiment
+
+```console
+uv run python -m agent_boundary_lab.experiment
+```
+
+The experiment compares seeded Random selection with a simplified TraceGuided
+strategy under the same candidate space and evaluation budget. TraceGuided uses
+only prior `ExecutionRecord` data; neither strategy receives expected decisions
+or violation labels. The target is intentionally vulnerable and entirely
+synthetic. It is not a real agent or security target.
+
+The experiment records discovery rate plus median and mean evaluations to first
+violation among successful runs. A separate regression test preserves the
+synthetic violation found by search.
+
 ## Architecture
 
 The v0.1 flow is:
@@ -63,9 +82,12 @@ Scenario -> AgentAction -> BoundaryRule -> BoundaryEngine
 - `engine.py` matches actions to rules and produces execution records.
 - `evaluator.py` compares recorded decisions with scenario expectations.
 - `demo.py` runs the deterministic terminal demonstration.
+- `attacks.py` defines candidate mutations and the two bounded strategies.
+- `experiment.py` contains the intentionally vulnerable synthetic fixture,
+  experiment runner, metrics, and terminal output.
 
 ## Next directions
 
-After the v0.1 semantics are stable, possible next steps are richer policy
-matching, regression scenario storage, and adapters for controlled test
-environments. Those capabilities are not part of the current prototype.
+Possible next steps are richer policy matching, persisted regression scenarios,
+and evaluation on controlled research-agent fixtures. Those capabilities are not
+part of the current prototype.
