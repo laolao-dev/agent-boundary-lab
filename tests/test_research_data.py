@@ -108,6 +108,7 @@ def test_default_demo_is_offline(
 
     assert main([]) == 0
     output = capsys.readouterr().out
-    assert "Mode: REPLAY" in output
+    assert "MODE: REPLAY (OFFLINE FIXTURE)" in output
     assert "BLOCKED_PRE_DISPATCH" in output
+    assert "Transport calls after DENY: 0" in output
     assert (tmp_path / "artifacts" / "openalex_mcp_evidence.json").is_file()

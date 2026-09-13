@@ -212,7 +212,7 @@ def main(output_path: Path = DEFAULT_EVIDENCE_PATH) -> int:
     print("Decision: DENY")
     print("APPROVAL REQUIRED: external:publisher_submission")
     print("Pre-approval send: NOT EXECUTED")
-    print(f"Human approval: {workflow.approval_event.decision.value}")
+    print(f"Synthetic approval fixture: {workflow.approval_event.decision.value}")
     print(f"Workflow: {workflow.status.value}")
     print("[2] Audit")
     print(f"Steps recorded: {len(workflow.audit_trail)}")
