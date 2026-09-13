@@ -19,6 +19,7 @@ class ActionType(str, Enum):
     READ_FILE = "READ_FILE"
     READ_SECRET = "READ_SECRET"
     NETWORK_SEND = "NETWORK_SEND"
+    MCP_TOOL_CALL = "MCP_TOOL_CALL"
 
 
 @dataclass(frozen=True)

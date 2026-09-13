@@ -1,0 +1,99 @@
+{
+  "allowed_decision": "ALLOW",
+  "allowed_dispatched": true,
+  "allowed_tool": "openalex_search_entities",
+  "audit_records": [
+    {
+      "boundary_decision": "ALLOW",
+      "dispatched": true,
+      "error": null,
+      "reason": "This workflow allows bounded OpenAlex publication search",
+      "result": "RETURNED_2_RECORDS",
+      "result_ids": [
+        "https://openalex.org/W2741809807",
+        "https://openalex.org/W2919115771"
+      ],
+      "sanitized_arguments": {
+        "entity_type": "works",
+        "filters": {
+          "openalex": "W2741809807|W2919115771"
+        },
+        "per_page": 2,
+        "select": [
+          "doi",
+          "publication_year"
+        ]
+      },
+      "server_id": "openalex",
+      "tool_name": "openalex_search_entities"
+    },
+    {
+      "boundary_decision": "DENY",
+      "dispatched": false,
+      "error": null,
+      "reason": "This least-privilege workflow does not allow citation graph access",
+      "result": "BLOCKED_PRE_DISPATCH",
+      "result_ids": [],
+      "sanitized_arguments": {
+        "direction": "cites",
+        "per_page": 2,
+        "seed_id": "https://openalex.org/W2741809807"
+      },
+      "server_id": "openalex",
+      "tool_name": "openalex_get_citation_graph"
+    }
+  ],
+  "denied_decision": "DENY",
+  "denied_dispatched": false,
+  "denied_tool": "openalex_get_citation_graph",
+  "denied_transport_call_count": 0,
+  "dois": [
+    "https://doi.org/10.7717/peerj.4375",
+    "https://doi.org/10.1038/nature14539"
+  ],
+  "evidence_mode": "replay",
+  "limitations": [
+    "COMMUNITY MCP SERVER \u2014 NOT OFFICIAL OPENALEX MCP",
+    "NO LLM",
+    "NO FULL TEXT",
+    "NO WRITE OPERATION",
+    "NO CLAIM OF A REAL SECURITY VULNERABILITY",
+    "Scholarly metadata provenance only; paper contents and authenticity were not verified"
+  ],
+  "mcp_negotiated_protocol": "2025-06-18",
+  "mcp_package": "@cyanheads/openalex-mcp-server@0.7.8",
+  "provenance": {
+    "dois": [
+      "https://doi.org/10.7717/peerj.4375",
+      "https://doi.org/10.1038/nature14539"
+    ],
+    "mcp_server": "openalex",
+    "mcp_tool": "openalex_search_entities",
+    "openalex_ids": [
+      "https://openalex.org/W2741809807",
+      "https://openalex.org/W2919115771"
+    ],
+    "output_id": "research_evidence_bundle",
+    "provider": "OpenAlex",
+    "workflow_step": "bounded_publication_search"
+  },
+  "provider": "OpenAlex",
+  "record_ids": [
+    "https://openalex.org/W2741809807",
+    "https://openalex.org/W2919115771"
+  ],
+  "records": [
+    {
+      "doi": "https://doi.org/10.7717/peerj.4375",
+      "openalex_id": "https://openalex.org/W2741809807",
+      "publication_year": 2018,
+      "title": "The state of OA: a large-scale analysis of the prevalence and impact of Open Access articles"
+    },
+    {
+      "doi": "https://doi.org/10.1038/nature14539",
+      "openalex_id": "https://openalex.org/W2919115771",
+      "publication_year": 2015,
+      "title": "Deep learning"
+    }
+  ]
+}

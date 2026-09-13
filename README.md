@@ -17,9 +17,9 @@ evaluates that record against a scenario expectation.
 ## What v0.1 cannot do
 
 This prototype does not run a real AI agent, intercept filesystem or network
-operations, access secrets, provide an operating-system sandbox, integrate with
-MCP or agent frameworks, discover vulnerabilities in real systems, or provide
-production security.
+operations, access secrets, provide an operating-system sandbox, provide a generic
+MCP framework, discover vulnerabilities in real systems, or provide production
+security. Its OpenAlex anchor covers only a single bounded scholarly-metadata flow.
 
 ## Install
 
@@ -82,6 +82,20 @@ machine-readable evidence to `artifacts/grant_demo_evidence.json`.
 The workflow never reads a real source or secret and never sends a network
 request. Its human approval is a fixed synthetic fixture.
 
+## Run the OpenAlex research-data anchor
+
+```console
+uv run python -m agent_boundary_lab.research_data_demo
+uv run python -m agent_boundary_lab.research_data_demo --live
+```
+
+Replay is the default and performs no network access. Live mode explicitly starts
+the pinned community OpenAlex MCP server over stdio and requires
+`OPENALEX_API_KEY`. The boundary decision occurs before dispatch: publication
+search is allowed, while the citation-graph capability is denied without reaching
+the transport. Only scholarly metadata is retained; no full text is downloaded or
+interpreted.
+
 ## Architecture
 
 The v0.1 flow is:
@@ -102,6 +116,10 @@ Scenario -> AgentAction -> BoundaryRule -> BoundaryEngine
 - `research_workflow.py` runs the synthetic research workflow and records audit,
   provenance, and approval state.
 - `grant_demo.py` produces the grant-facing terminal demo and JSON evidence.
+- `research_data.py` implements the narrow OpenAlex MCP policy, dispatch, replay,
+  audit, and provenance path.
+- `research_data_demo.py` prints the replay/live demo and writes deterministic
+  replay evidence.
 
 ## Next directions
 
