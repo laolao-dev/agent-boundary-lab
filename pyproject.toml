@@ -9,6 +9,9 @@ dependencies = [
     "mcp>=2,<3",
 ]
 
+[project.scripts]
+abl = "agent_boundary_lab.cli:main"
+
 [dependency-groups]
 dev = [
     "basedpyright",

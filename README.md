@@ -83,6 +83,23 @@ and makes no network request. It replays a small checked-in scholarly-metadata
 fixture and writes deterministic evidence to
 `artifacts/openalex_mcp_evidence.json`.
 
+## v0.2 workflow assurance development preview
+
+The alpha v0.2 vertical slice adds deterministic, workflow-level checks for
+governance, evidence lineage, structured human-review records, and audit
+completeness. It implements only these current checks and does not authenticate
+reviewers, verify research content, or provide a general trust score.
+
+Run the intentionally incomplete local example with no external API calls:
+
+```console
+uv run abl verify examples/research_workflow.json
+```
+
+The command writes `artifacts/assurance_report.json`. Exit code `0` means every
+current check passed, `1` means the report is `INCOMPLETE`, and `2` means the
+workflow input could not be validated.
+
 ## Architecture in v0.1
 
 - **Boundary Harness** — exact action/target rules produce `ALLOW`, `DENY`, or

@@ -13,6 +13,7 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+artifacts/assurance_report.json
 
 # Local environment files
 .env
