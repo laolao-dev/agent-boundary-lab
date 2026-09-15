@@ -1,0 +1,2 @@
+benchmarks/mcpguard_dynamic/** text eol=lf
+benchmarks/mcpguard_dynamic/public_evidence/** -text -eol

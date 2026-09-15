@@ -1,0 +1,15 @@
+{
+  "audit_records": 82,
+  "c0_viable_denominator": 48,
+  "case_order_identical": true,
+  "false_positive_count": 8,
+  "raw_result_counts": {
+    "C-AB": 82,
+    "C-ABL": 82,
+    "C-app": 82,
+    "C0": 82
+  },
+  "runtime_artifacts_all_classified": true,
+  "tracked_source_all_clean": true,
+  "viable_false_negative_count": 27
+}

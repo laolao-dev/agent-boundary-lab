@@ -23,6 +23,7 @@ build-backend = "uv_build"
 [tool.pytest.ini_options]
 addopts = "-ra"
 testpaths = ["tests"]
+pythonpath = ["."]
 
 [tool.ruff]
 target-version = "py312"
@@ -40,6 +41,6 @@ line-ending = "auto"
 [tool.basedpyright]
 pythonVersion = "3.12"
 typeCheckingMode = "standard"
-include = ["src", "tests"]
+include = ["src", "tests", "benchmarks"]
 venvPath = "."
 venv = ".venv"

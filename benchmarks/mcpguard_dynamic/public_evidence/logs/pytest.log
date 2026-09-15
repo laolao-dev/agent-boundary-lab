@@ -1,0 +1,20 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0
+rootdir: <LOCAL_HOME>/abl-benchmark-run-20260914-attempt-03/agent-boundary-lab
+configfile: pyproject.toml
+testpaths: tests
+plugins: anyio-4.15.1
+collected 39 items
+
+tests/test_attacks.py ..                                                 [  5%]
+tests/test_boundary_harness.py ....                                      [ 15%]
+tests/test_experiment.py ...                                             [ 23%]
+tests/test_grant_demo.py ...                                             [ 30%]
+tests/test_mcpguard_dynamic_adapter.py ........                          [ 51%]
+tests/test_mcpguard_dynamic_policy.py ......                             [ 66%]
+tests/test_regression_violation.py .                                     [ 69%]
+tests/test_research_data.py ......                                       [ 84%]
+tests/test_research_workflow.py .....                                    [ 97%]
+tests/test_smoke.py .                                                    [100%]
+
+============================== 39 passed in 0.78s ==============================

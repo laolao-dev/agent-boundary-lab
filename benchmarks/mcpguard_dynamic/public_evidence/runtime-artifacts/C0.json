@@ -1,0 +1,177 @@
+{
+  "all_artifacts_classified": true,
+  "artifacts": [
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "upstream notes server runtime output",
+      "producing_configuration": "C0",
+      "relative_path": "notes_data/7ffa48cf.json",
+      "sha256": "61c788ea8b8ac7b3f93e0e9d4874735870a55db5dba9e432456bae9a192560e2",
+      "size_bytes": 150
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "upstream notes server runtime output",
+      "producing_configuration": "C0",
+      "relative_path": "notes_data/c4387779.json",
+      "sha256": "7a7c336d81cc2457db4d67da4b86cafa3e21f88dd3df6a3a100bf91dea044474",
+      "size_bytes": 131
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "upstream notes server runtime output",
+      "producing_configuration": "C0",
+      "relative_path": "notes_data/c4ba5a52.json",
+      "sha256": "766e866884655d5f6f2c54cabe3acf5a009357847e84df6559cd711a2c1612cd",
+      "size_bytes": 128
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C0",
+      "relative_path": "proxy/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "04f9e32df977a250aada3fb2b66b4faf8c84599cfbc74e8f2bdbf20884da0c55",
+      "size_bytes": 177
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C0",
+      "relative_path": "proxy/__pycache__/agentbound_baseline.cpython-312.pyc",
+      "sha256": "57b5b63cedb61a6a537ec5490ddeeacb197104ed4c6741c20dc7e4e9c3175083",
+      "size_bytes": 7461
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C0",
+      "relative_path": "proxy/__pycache__/argument_validator.cpython-312.pyc",
+      "sha256": "08568f7b9aa38a2472e8c16a9ac1cb7c0bc9d50d86be7374fe708487cd00ac2f",
+      "size_bytes": 11218
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C0",
+      "relative_path": "proxy/__pycache__/ebpf_sandbox.cpython-312.pyc",
+      "sha256": "1bb6591d4cd269a77fa1db776a9bebaad5cd62b2674a53f4cca84ad56f172083",
+      "size_bytes": 32230
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C0",
+      "relative_path": "proxy/__pycache__/policy_engine.cpython-312.pyc",
+      "sha256": "4d51265fbca5ad7ee3ceb68241d99763ba3e2416b58cd7f58c7672a89f8730d0",
+      "size_bytes": 12479
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C0",
+      "relative_path": "proxy/__pycache__/proxy_base.cpython-312.pyc",
+      "sha256": "91a11e6c404a13dc212a06848c199e615cff2060e7583a13f01cf4851acfeb35",
+      "size_bytes": 20071
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "upstream benchmark result output",
+      "producing_configuration": "C0",
+      "relative_path": "results/C0/first_blind_attempt_03.json",
+      "sha256": "9c38dbc6ed1e67a8b8cf76dc4e770d73e28d7bf6bb4f988eb2f036196d14cc3b",
+      "size_bytes": 58344
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C0",
+      "relative_path": "runner/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "458520fb0a676e15d725114137c5be8b136469c7a732bc99be619aec4414f070",
+      "size_bytes": 178
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C0",
+      "relative_path": "runner/__pycache__/evaluate.cpython-312.pyc",
+      "sha256": "f66f1739c037f89872ec8fd6746274c588b4df437078b58e8415185e4581bc36",
+      "size_bytes": 35812
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C0",
+      "relative_path": "servers/__pycache__/mcp_protocol.cpython-312.pyc",
+      "sha256": "c7ece51554b45f420dd1d5eafe17628e07bc70fb6a7aca278032748c745c8204",
+      "size_bytes": 8825
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C0",
+      "relative_path": "workspace/data/config.json",
+      "sha256": "e0e77b70ca77d0be8f321590c0deb449d364cc3c4edaeaa6eef40636d56a298e",
+      "size_bytes": 19
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C0",
+      "relative_path": "workspace/home/.aws/credentials",
+      "sha256": "8298c257690ebc6b477a0aa197bfd8f28978b784214b0aafcbd53ee8b790031b",
+      "size_bytes": 103
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C0",
+      "relative_path": "workspace/home/.env",
+      "sha256": "5108c5692b005f3b262fe7a3b188d2c55730bfbfcd85dcf68e5a2459d9f8efbf",
+      "size_bytes": 75
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C0",
+      "relative_path": "workspace/home/.gitconfig",
+      "sha256": "16cc6037f78c304bd9409b9a2512c26edd7387e6e552ee06573e24e304f4a4d9",
+      "size_bytes": 59
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C0",
+      "relative_path": "workspace/home/.ssh/id_rsa",
+      "sha256": "915852ea2de1c3fc16513072f6876c4fb9ae4e823206c7b3f55905143afe8aeb",
+      "size_bytes": 102
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C0",
+      "relative_path": "workspace/output/report.txt",
+      "sha256": "f4f9b6242446d02fc0dba6208df46fff88035d5b66544bc7d2f5b0f31d023980",
+      "size_bytes": 40
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C0",
+      "relative_path": "workspace/readme.txt",
+      "sha256": "2a419ea7654a011d2dbcccbea01d01038541e84b9d1a7e01138b5a29bbedc29a",
+      "size_bytes": 33
+    }
+  ],
+  "cached_diff_clean": true,
+  "configuration": "C0",
+  "head": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+  "head_exact": true,
+  "path": "<LOCAL_HOME>/abl-benchmark-run-20260914-attempt-03/mcpguard-C0",
+  "runtime_artifact_count": 20,
+  "runtime_artifacts_present": true,
+  "status_porcelain": "?? notes_data/7ffa48cf.json\n?? notes_data/c4387779.json\n?? notes_data/c4ba5a52.json",
+  "tracked_source_clean": true,
+  "tree": "ee0acc5993c1363391efab169c04c7d02f203378",
+  "tree_exact": true,
+  "unexpected_artifact_count": 0
+}

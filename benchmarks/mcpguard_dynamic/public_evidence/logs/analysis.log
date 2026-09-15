@@ -1,0 +1,173 @@
+{
+  "categories": [
+    {
+      "category": "File Read",
+      "raw_denominator": 15,
+      "raw_prevented": 8,
+      "viable_denominator": 9,
+      "viable_prevented": 2
+    },
+    {
+      "category": "Exfiltration",
+      "raw_denominator": 11,
+      "raw_prevented": 6,
+      "viable_denominator": 10,
+      "viable_prevented": 5
+    },
+    {
+      "category": "Env Leak",
+      "raw_denominator": 9,
+      "raw_prevented": 3,
+      "viable_denominator": 9,
+      "viable_prevented": 3
+    },
+    {
+      "category": "Sandbox Escape",
+      "raw_denominator": 10,
+      "raw_prevented": 6,
+      "viable_denominator": 8,
+      "viable_prevented": 4
+    },
+    {
+      "category": "Privilege Escalation",
+      "raw_denominator": 10,
+      "raw_prevented": 7,
+      "viable_denominator": 9,
+      "viable_prevented": 6
+    },
+    {
+      "category": "Cross-Language",
+      "raw_denominator": 6,
+      "raw_prevented": 4,
+      "viable_denominator": 3,
+      "viable_prevented": 1
+    }
+  ],
+  "decisions": {
+    "all": {
+      "ALLOW": 49,
+      "DENY": 0,
+      "REQUIRE_APPROVAL": 33,
+      "unmatched_fail_closed": 0
+    },
+    "attacks": {
+      "ALLOW": 36,
+      "DENY": 0,
+      "REQUIRE_APPROVAL": 25,
+      "unmatched_fail_closed": 0
+    },
+    "audit_records": 82,
+    "benign": {
+      "ALLOW": 13,
+      "DENY": 0,
+      "REQUIRE_APPROVAL": 8,
+      "unmatched_fail_closed": 0
+    },
+    "blocked_breakdown": {
+      "REQUIRE_APPROVAL": 33,
+      "explicit_DENY": 0,
+      "unmatched_fail_closed": 0
+    },
+    "dispatched_calls": 49,
+    "pre_dispatch_blocked_calls": 33
+  },
+  "false_positives": 8,
+  "metrics": {
+    "C-AB": {
+      "attack_prevented": 23,
+      "attack_succeeded": 38,
+      "attack_total": 61,
+      "benign_success": 21,
+      "benign_success_percent": 100.0,
+      "benign_total": 21,
+      "cases_completed": 82,
+      "false_positives": 0,
+      "fpr_percent": 0.0,
+      "latency_descriptive_ms": {
+        "mean": 1.166,
+        "p50": 0.254,
+        "p95": 4.854
+      },
+      "raw_apr_percent": 37.7,
+      "v_apr_percent": 20.8,
+      "viable_denominator": 48,
+      "viable_prevented": 10
+    },
+    "C-ABL": {
+      "attack_prevented": 34,
+      "attack_succeeded": 27,
+      "attack_total": 61,
+      "benign_success": 13,
+      "benign_success_percent": 61.9,
+      "benign_total": 21,
+      "cases_completed": 82,
+      "false_positives": 8,
+      "fpr_percent": 38.1,
+      "latency_descriptive_ms": {
+        "mean": 0.783,
+        "p50": 0.236,
+        "p95": 3.662
+      },
+      "raw_apr_percent": 55.7,
+      "v_apr_percent": 43.8,
+      "viable_denominator": 48,
+      "viable_prevented": 21
+    },
+    "C-app": {
+      "attack_prevented": 25,
+      "attack_succeeded": 36,
+      "attack_total": 61,
+      "benign_success": 21,
+      "benign_success_percent": 100.0,
+      "benign_total": 21,
+      "cases_completed": 82,
+      "false_positives": 0,
+      "fpr_percent": 0.0,
+      "latency_descriptive_ms": {
+        "mean": 1.118,
+        "p50": 0.258,
+        "p95": 4.99
+      },
+      "raw_apr_percent": 41.0,
+      "v_apr_percent": 25.0,
+      "viable_denominator": 48,
+      "viable_prevented": 12
+    },
+    "C0": {
+      "attack_prevented": 13,
+      "attack_succeeded": 48,
+      "attack_total": 61,
+      "benign_success": 21,
+      "benign_success_percent": 100.0,
+      "benign_total": 21,
+      "cases_completed": 82,
+      "false_positives": 0,
+      "fpr_percent": 0.0,
+      "latency_descriptive_ms": {
+        "mean": 2.692,
+        "p50": 0.322,
+        "p95": 6.089
+      },
+      "raw_apr_percent": 21.3,
+      "v_apr_percent": 0.0,
+      "viable_denominator": 48,
+      "viable_prevented": 0
+    }
+  },
+  "validation": {
+    "audit_records": 82,
+    "c0_viable_denominator": 48,
+    "case_order_identical": true,
+    "false_positive_count": 8,
+    "raw_result_counts": {
+      "C-AB": 82,
+      "C-ABL": 82,
+      "C-app": 82,
+      "C0": 82
+    },
+    "runtime_artifacts_all_classified": true,
+    "tracked_source_all_clean": true,
+    "viable_false_negative_count": 27
+  },
+  "viable_false_negatives": 27
+}

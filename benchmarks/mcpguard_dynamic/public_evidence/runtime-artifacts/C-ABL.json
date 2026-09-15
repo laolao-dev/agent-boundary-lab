@@ -1,0 +1,153 @@
+{
+  "all_artifacts_classified": true,
+  "artifacts": [
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-ABL",
+      "relative_path": "proxy/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "e8d0f6782f1c04cc87e0f5d86a134c4645b45b578d3dbcce6610193ffd1d1942",
+      "size_bytes": 180
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-ABL",
+      "relative_path": "proxy/__pycache__/agentbound_baseline.cpython-312.pyc",
+      "sha256": "8fb9929f6f40bd9cd74df730d4e2a92cb3fdeddb0c475a8be45c964a4bf8eb79",
+      "size_bytes": 7464
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-ABL",
+      "relative_path": "proxy/__pycache__/argument_validator.cpython-312.pyc",
+      "sha256": "f342623d268b909ecee4a3351e4f9aa60db1573be5b52bc93aa25a161e925633",
+      "size_bytes": 11221
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-ABL",
+      "relative_path": "proxy/__pycache__/ebpf_sandbox.cpython-312.pyc",
+      "sha256": "66df1ad9c06320ceb9f6211bd17d9fe33789ab7efe043c381885d22cf345ed2d",
+      "size_bytes": 32233
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-ABL",
+      "relative_path": "proxy/__pycache__/policy_engine.cpython-312.pyc",
+      "sha256": "afccbeddc517ce07c1f7909a86cb40b2c70d083fa1a2ecbfa3b07183fee4c395",
+      "size_bytes": 12482
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-ABL",
+      "relative_path": "proxy/__pycache__/proxy_base.cpython-312.pyc",
+      "sha256": "f8e8824c4a87c4bb47bf8aae30649c065cd6d7a78716bddb94a8bdff9e68ab44",
+      "size_bytes": 20074
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "upstream benchmark result output",
+      "producing_configuration": "C-ABL",
+      "relative_path": "results/C-ABL/first_blind_attempt_03.audit.jsonl",
+      "sha256": "76ecedb4a4a8eeae2f081fd86d971ee9971b91bc64d69e1a93a3d8d68b3edd06",
+      "size_bytes": 24517
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "upstream benchmark result output",
+      "producing_configuration": "C-ABL",
+      "relative_path": "results/C-ABL/first_blind_attempt_03.json",
+      "sha256": "40f211fccb4ddac8b9dd0f1f8c3866a514fec99e02794e75e5a2a80a7c1e1019",
+      "size_bytes": 60428
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-ABL",
+      "relative_path": "runner/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "2c680c64856788b3434d969f5b277bbb41134ac6a4f89ccc0384de530992ec36",
+      "size_bytes": 181
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-ABL",
+      "relative_path": "runner/__pycache__/evaluate.cpython-312.pyc",
+      "sha256": "ec91e6e3717e39fc60835714189e52fdf43ff3fda7db5127a2efb8ba4e0b7085",
+      "size_bytes": 35815
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-ABL",
+      "relative_path": "servers/__pycache__/mcp_protocol.cpython-312.pyc",
+      "sha256": "2df37fb3298c4a74bf8ff591d2a5ca6bc72984ff71c130dd966ea3983aca1d37",
+      "size_bytes": 8828
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-ABL",
+      "relative_path": "workspace/data/config.json",
+      "sha256": "e0e77b70ca77d0be8f321590c0deb449d364cc3c4edaeaa6eef40636d56a298e",
+      "size_bytes": 19
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-ABL",
+      "relative_path": "workspace/home/.aws/credentials",
+      "sha256": "8298c257690ebc6b477a0aa197bfd8f28978b784214b0aafcbd53ee8b790031b",
+      "size_bytes": 103
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-ABL",
+      "relative_path": "workspace/home/.env",
+      "sha256": "5108c5692b005f3b262fe7a3b188d2c55730bfbfcd85dcf68e5a2459d9f8efbf",
+      "size_bytes": 75
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-ABL",
+      "relative_path": "workspace/home/.gitconfig",
+      "sha256": "16cc6037f78c304bd9409b9a2512c26edd7387e6e552ee06573e24e304f4a4d9",
+      "size_bytes": 59
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-ABL",
+      "relative_path": "workspace/home/.ssh/id_rsa",
+      "sha256": "915852ea2de1c3fc16513072f6876c4fb9ae4e823206c7b3f55905143afe8aeb",
+      "size_bytes": 102
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-ABL",
+      "relative_path": "workspace/readme.txt",
+      "sha256": "2a419ea7654a011d2dbcccbea01d01038541e84b9d1a7e01138b5a29bbedc29a",
+      "size_bytes": 33
+    }
+  ],
+  "cached_diff_clean": true,
+  "configuration": "C-ABL",
+  "head": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+  "head_exact": true,
+  "path": "<LOCAL_HOME>/abl-benchmark-run-20260914-attempt-03/mcpguard-C-ABL",
+  "runtime_artifact_count": 17,
+  "runtime_artifacts_present": true,
+  "status_porcelain": "",
+  "tracked_source_clean": true,
+  "tree": "ee0acc5993c1363391efab169c04c7d02f203378",
+  "tree_exact": true,
+  "unexpected_artifact_count": 0
+}

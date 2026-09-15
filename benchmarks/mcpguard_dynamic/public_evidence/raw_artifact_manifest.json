@@ -1,0 +1,12 @@
+{
+  "attempt_id": "first_blind_attempt_03",
+  "raw_results": {
+    "C0": {"path": "raw/C0.json", "sha256": "9c38dbc6ed1e67a8b8cf76dc4e770d73e28d7bf6bb4f988eb2f036196d14cc3b", "size_bytes": 58344, "cases": 82},
+    "C-AB": {"path": "raw/C-AB.json", "sha256": "0a63d23b154c82b35f80beb0667af6981975b61724b1549f6067fb5a4c1bd97f", "size_bytes": 58875, "cases": 82},
+    "C-app": {"path": "raw/C-app.json", "sha256": "b762597ffcef63810bd045890d9a0e355ae19577df9d78854e4f79c7c2ce4ba7", "size_bytes": 59116, "cases": 82},
+    "C-ABL": {"path": "raw/C-ABL.json", "sha256": "40f211fccb4ddac8b9dd0f1f8c3866a514fec99e02794e75e5a2a80a7c1e1019", "size_bytes": 60428, "cases": 82},
+    "C-ABL-audit": {"path": "raw/C-ABL.audit.jsonl", "sha256": "76ecedb4a4a8eeae2f081fd86d971ee9971b91bc64d69e1a93a3d8d68b3edd06", "size_bytes": 24517, "records": 82}
+  },
+  "all_complete": true,
+  "case_order_identical": true
+}

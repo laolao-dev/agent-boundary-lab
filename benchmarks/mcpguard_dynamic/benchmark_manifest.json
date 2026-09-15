@@ -1,0 +1,47 @@
+{
+  "abl_adapter_commit": null,
+  "abl_adapter_working_sha256": "b9abd0dc52da2553113dadfaab2050c8b992b5d7b5b8f807c58cb9b2844d92ca",
+  "abl_base_commit": "d9c381d13500b1f69efc404eab6792e0e4f5f7e7",
+  "adapter_files_sha256": {
+    "adapter.py": "b3a48fb83cd92a0848d01542d44de53636d48e50d195f8da6e5b230f630b2091",
+    "conformance.py": "4240a1e2e3a2bc743de3f95059df8325900a30f60aa65dbddc884c6b0ff2c496",
+    "fixtures/conformance_server.py": "15d73f5f26ed5691a5b99070cd75ade57f2137900c6f684d745fac983bc9c2d4",
+    "freeze.py": "97176fb035884c734976db5420c2b872ad4f058add1c3c2e9ddadf84e3cde596",
+    "policy.py": "9edb93a62894f1882774bfb889eea046b31c8cb590f42270b105a56bb4a15c82",
+    "runner.py": "96f5e532d611c7c5a4433e1b76442313bc1945abccea4c078cbb4541ce98032f",
+    "tool_manifest.py": "23ebb7fe54396abcbad1d6263516f7f4d4188527c1cf9602d8b59b87f7f9c445",
+    "upstream.py": "736c11a5598a8c2afe3bd5105f0207920c74093642fae04ed98cf981b89a0929"
+  },
+  "arguments_used_for_decisions": false,
+  "decision_semantics": {
+    "ALLOW": "exactly one upstream C0 tools/call dispatch",
+    "DENY": "zero upstream tools/call dispatches",
+    "REQUIRE_APPROVAL": "zero dispatches because the benchmark has no real approval event",
+    "unmatched": "DENY"
+  },
+  "environment": {
+    "kernel": "6.18.33.2-microsoft-standard-WSL2",
+    "node": "24.20.0",
+    "python": "3.14.4",
+    "ubuntu": "26.04.1 LTS",
+    "wsl": "2.7.12.0"
+  },
+  "mcpguard_commit": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+  "mcpguard_tree_sha": "ee0acc5993c1363391efab169c04c7d02f203378",
+  "official_c_abl_score_run_yet": false,
+  "policy_counts": {
+    "ALLOW": 30,
+    "DENY": 0,
+    "REQUIRE_APPROVAL": 14
+  },
+  "policy_frozen_before_results": true,
+  "policy_manifest_sha256": "c65f2edbb1b2721810f274f1afc24f163a0c606d29bbb02389519d813c41f0bb",
+  "policy_rubric_sha256": "e1182dac59151d2787e3de445eb85c852980fd249d7f51dda12008ea23485f7c",
+  "rootless_namespace": {
+    "requirement": "namespace uid 0 maps to one non-root host uid",
+    "stage_0_5_shadow_read_rc": 1,
+    "wrapper": "unshare -Ur"
+  },
+  "sanitized_tool_manifest_sha256": "7b4d4bca733e8edb314c6dc30fd795cf8e7b06fe11732373eb58a444dca41d71",
+  "version": "1.0.0"
+}

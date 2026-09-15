@@ -1,0 +1,12 @@
+{
+  "attempt_id": "first_blind_attempt_03",
+  "upstream_worktree": "<LOCAL_HOME>/abl-benchmark-run-20260914-attempt-03/mcpguard-conformance",
+  "all_passed": true,
+  "pytest": {"passed": 39, "failed": 0},
+  "ruff_check": "PASS",
+  "ruff_format_check": {"status": "PASS", "files_already_formatted": 37},
+  "basedpyright": {"status": "PASS", "errors": 0, "warnings": 0, "notes": 0},
+  "rootless_integration": {"status": "PASS", "checks_passed": 12, "checks_failed": 0},
+  "tracked_git_diff_check": "PASS",
+  "score_worktree_used_for_conformance": false
+}

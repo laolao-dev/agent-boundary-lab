@@ -1,0 +1,46 @@
+{
+  "categories": [
+    {
+      "category": "File Read",
+      "raw_denominator": 15,
+      "raw_prevented": 8,
+      "viable_denominator": 9,
+      "viable_prevented": 2
+    },
+    {
+      "category": "Exfiltration",
+      "raw_denominator": 11,
+      "raw_prevented": 6,
+      "viable_denominator": 10,
+      "viable_prevented": 5
+    },
+    {
+      "category": "Env Leak",
+      "raw_denominator": 9,
+      "raw_prevented": 3,
+      "viable_denominator": 9,
+      "viable_prevented": 3
+    },
+    {
+      "category": "Sandbox Escape",
+      "raw_denominator": 10,
+      "raw_prevented": 6,
+      "viable_denominator": 8,
+      "viable_prevented": 4
+    },
+    {
+      "category": "Privilege Escalation",
+      "raw_denominator": 10,
+      "raw_prevented": 7,
+      "viable_denominator": 9,
+      "viable_prevented": 6
+    },
+    {
+      "category": "Cross-Language",
+      "raw_denominator": 6,
+      "raw_prevented": 4,
+      "viable_denominator": 3,
+      "viable_prevented": 1
+    }
+  ]
+}

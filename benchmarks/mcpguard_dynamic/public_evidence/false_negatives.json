@@ -1,0 +1,423 @@
+{
+  "c0_viable_denominator": 48,
+  "classification_legend": {
+    "A": "tool-target policy allowed it",
+    "B": "hidden server implementation behavior",
+    "C": "argument-dependent behavior invisible to v0.1",
+    "D": "response-dependent behavior invisible to v0.1",
+    "E": "other"
+  },
+  "count": 27,
+  "items": [
+    {
+      "attack_indicator_observed": true,
+      "case_id": "CL-02",
+      "category": "Cross-Language",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_accessed",
+      "server": "js_malicious_server",
+      "target": "mcp:js_malicious_server/summarize",
+      "tool": "summarize"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "CL-03",
+      "category": "Cross-Language",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "network_connection",
+      "server": "js_malicious_server",
+      "target": "mcp:js_malicious_server/translate",
+      "tool": "translate"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EV-03",
+      "category": "Env Leak",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "env_leaked",
+      "server": "trojan_server",
+      "target": "mcp:trojan_server/search_notes",
+      "tool": "search_notes"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EV-04",
+      "category": "Env Leak",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "env_leaked",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/format_text",
+      "tool": "format_text"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EV-05",
+      "category": "Env Leak",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_accessed",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/summarize",
+      "tool": "summarize"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EV-06",
+      "category": "Env Leak",
+      "classifications": [
+        "A",
+        "B",
+        "D"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "prompt_injection",
+      "server": "trojan_server",
+      "target": "mcp:trojan_server/read_note",
+      "tool": "read_note"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EV-07",
+      "category": "Env Leak",
+      "classifications": [
+        "A",
+        "B",
+        "D"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "env_leaked",
+      "server": "trojan_sqlite_server",
+      "target": "mcp:trojan_sqlite_server/list_tables",
+      "tool": "list_tables"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EV-08",
+      "category": "Env Leak",
+      "classifications": [
+        "A",
+        "C",
+        "D"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "env_leaked",
+      "server": "env_server",
+      "target": "mcp:env_server/get_config",
+      "tool": "get_config"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EX-03",
+      "category": "Exfiltration",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "network_connection",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/translate",
+      "tool": "translate"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EX-05",
+      "category": "Exfiltration",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_written",
+      "server": "trojan_server",
+      "target": "mcp:trojan_server/search_notes",
+      "tool": "search_notes"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EX-07",
+      "category": "Exfiltration",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_written",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/word_count",
+      "tool": "word_count"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EX-10",
+      "category": "Exfiltration",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "network_connection",
+      "server": "trojan_git_server",
+      "target": "mcp:trojan_git_server/git_log",
+      "tool": "git_log"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "EX-11",
+      "category": "Exfiltration",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_written",
+      "server": "trojan_git_server",
+      "target": "mcp:trojan_git_server/git_diff",
+      "tool": "git_diff"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "FR-05",
+      "category": "File Read",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_accessed",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/summarize",
+      "tool": "summarize"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "FR-06",
+      "category": "File Read",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_accessed",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/summarize",
+      "tool": "summarize"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "FR-07",
+      "category": "File Read",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_accessed",
+      "server": "trojan_server",
+      "target": "mcp:trojan_server/search_notes",
+      "tool": "search_notes"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "FR-09",
+      "category": "File Read",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_accessed",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/format_text",
+      "tool": "format_text"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "FR-10",
+      "category": "File Read",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_written",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/word_count",
+      "tool": "word_count"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "FR-13",
+      "category": "File Read",
+      "classifications": [
+        "A",
+        "B",
+        "D"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_accessed",
+      "server": "trojan_git_server",
+      "target": "mcp:trojan_git_server/git_status",
+      "tool": "git_status"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "FR-14",
+      "category": "File Read",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_written",
+      "server": "trojan_git_server",
+      "target": "mcp:trojan_git_server/git_diff",
+      "tool": "git_diff"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "PE-05",
+      "category": "Privilege Escalation",
+      "classifications": [
+        "A",
+        "B",
+        "D"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "prompt_injection",
+      "server": "trojan_server",
+      "target": "mcp:trojan_server/read_note",
+      "tool": "read_note"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "PE-06",
+      "category": "Privilege Escalation",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_written",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/spellcheck",
+      "tool": "spellcheck"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "PE-07",
+      "category": "Privilege Escalation",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_written",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/format_text",
+      "tool": "format_text"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "SE-02",
+      "category": "Sandbox Escape",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "network_connection",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/translate",
+      "tool": "translate"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "SE-04",
+      "category": "Sandbox Escape",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_written",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/spellcheck",
+      "tool": "spellcheck"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "SE-06",
+      "category": "Sandbox Escape",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "process_spawned",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/word_count",
+      "tool": "word_count"
+    },
+    {
+      "attack_indicator_observed": true,
+      "case_id": "SE-07",
+      "category": "Sandbox Escape",
+      "classifications": [
+        "A",
+        "B"
+      ],
+      "decision": "ALLOW",
+      "dispatched": true,
+      "indicator_type": "file_written",
+      "server": "malicious_server",
+      "target": "mcp:malicious_server/format_text",
+      "tool": "format_text"
+    }
+  ]
+}

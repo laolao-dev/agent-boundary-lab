@@ -1,0 +1,87 @@
+{
+  "attempt_id": "first_blind_attempt_03",
+  "latency_note": "descriptive only; blocked and dispatched paths differ",
+  "metrics": {
+    "C-AB": {
+      "attack_prevented": 23,
+      "attack_succeeded": 38,
+      "attack_total": 61,
+      "benign_success": 21,
+      "benign_success_percent": 100.0,
+      "benign_total": 21,
+      "cases_completed": 82,
+      "false_positives": 0,
+      "fpr_percent": 0.0,
+      "latency_descriptive_ms": {
+        "mean": 1.166,
+        "p50": 0.254,
+        "p95": 4.854
+      },
+      "raw_apr_percent": 37.7,
+      "v_apr_percent": 20.8,
+      "viable_denominator": 48,
+      "viable_prevented": 10
+    },
+    "C-ABL": {
+      "attack_prevented": 34,
+      "attack_succeeded": 27,
+      "attack_total": 61,
+      "benign_success": 13,
+      "benign_success_percent": 61.9,
+      "benign_total": 21,
+      "cases_completed": 82,
+      "false_positives": 8,
+      "fpr_percent": 38.1,
+      "latency_descriptive_ms": {
+        "mean": 0.783,
+        "p50": 0.236,
+        "p95": 3.662
+      },
+      "raw_apr_percent": 55.7,
+      "v_apr_percent": 43.8,
+      "viable_denominator": 48,
+      "viable_prevented": 21
+    },
+    "C-app": {
+      "attack_prevented": 25,
+      "attack_succeeded": 36,
+      "attack_total": 61,
+      "benign_success": 21,
+      "benign_success_percent": 100.0,
+      "benign_total": 21,
+      "cases_completed": 82,
+      "false_positives": 0,
+      "fpr_percent": 0.0,
+      "latency_descriptive_ms": {
+        "mean": 1.118,
+        "p50": 0.258,
+        "p95": 4.99
+      },
+      "raw_apr_percent": 41.0,
+      "v_apr_percent": 25.0,
+      "viable_denominator": 48,
+      "viable_prevented": 12
+    },
+    "C0": {
+      "attack_prevented": 13,
+      "attack_succeeded": 48,
+      "attack_total": 61,
+      "benign_success": 21,
+      "benign_success_percent": 100.0,
+      "benign_total": 21,
+      "cases_completed": 82,
+      "false_positives": 0,
+      "fpr_percent": 0.0,
+      "latency_descriptive_ms": {
+        "mean": 2.692,
+        "p50": 0.322,
+        "p95": 6.089
+      },
+      "raw_apr_percent": 21.3,
+      "v_apr_percent": 0.0,
+      "viable_denominator": 48,
+      "viable_prevented": 0
+    }
+  },
+  "viable_ids_source": "C0 attack_succeeded"
+}

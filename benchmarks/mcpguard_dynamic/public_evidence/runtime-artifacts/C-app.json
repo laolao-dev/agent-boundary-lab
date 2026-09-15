@@ -1,0 +1,177 @@
+{
+  "all_artifacts_classified": true,
+  "artifacts": [
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "upstream notes server runtime output",
+      "producing_configuration": "C-app",
+      "relative_path": "notes_data/62a98f00.json",
+      "sha256": "9beb840cf1b2f99c095eb22d519d01df5ba1a69080737fb6d63224ed425f589f",
+      "size_bytes": 127
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "upstream notes server runtime output",
+      "producing_configuration": "C-app",
+      "relative_path": "notes_data/6a66cea4.json",
+      "sha256": "a35bd604b009b055e46949f69af2ea207404bbef9fbdcaf1bf27246ce8bf5e08",
+      "size_bytes": 130
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "upstream notes server runtime output",
+      "producing_configuration": "C-app",
+      "relative_path": "notes_data/881cec73.json",
+      "sha256": "94c4a4cacc1e4c6cab6f10db110e7918acdb420428405e5b83712490a1b008e9",
+      "size_bytes": 150
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-app",
+      "relative_path": "proxy/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "5fef8c6d3a013873274eeb368697c4effe71c23809b2f1a6ba5bb22d74bcb426",
+      "size_bytes": 180
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-app",
+      "relative_path": "proxy/__pycache__/agentbound_baseline.cpython-312.pyc",
+      "sha256": "d538cb18eefbe7b9441a26035ff32e6462661b2eb88391aa7f6c135ee1def7ec",
+      "size_bytes": 7464
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-app",
+      "relative_path": "proxy/__pycache__/argument_validator.cpython-312.pyc",
+      "sha256": "742cbc0cdcaf441d187fc19a000bbbe1513649dfaf300d16e2e5b6fe63b60bb6",
+      "size_bytes": 11221
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-app",
+      "relative_path": "proxy/__pycache__/ebpf_sandbox.cpython-312.pyc",
+      "sha256": "72b76d5ae37c35e7982c4449ea78da3beae56c79bf2fff82b8d52e1e365f131a",
+      "size_bytes": 32233
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-app",
+      "relative_path": "proxy/__pycache__/policy_engine.cpython-312.pyc",
+      "sha256": "41b34356c909cd7682d848789ba06182e03e9990181a97b49217690c8e7557b0",
+      "size_bytes": 12482
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-app",
+      "relative_path": "proxy/__pycache__/proxy_base.cpython-312.pyc",
+      "sha256": "1e583522c1d5d959afb0722c5d3d705bf7192e5613bbf8f239ea1601d1256025",
+      "size_bytes": 20074
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "upstream benchmark result output",
+      "producing_configuration": "C-app",
+      "relative_path": "results/C-app/first_blind_attempt_03.json",
+      "sha256": "b762597ffcef63810bd045890d9a0e355ae19577df9d78854e4f79c7c2ce4ba7",
+      "size_bytes": 59116
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-app",
+      "relative_path": "runner/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "becc8ca92cbc91af453938ae917cd4693d99e1d8e1fdc9d4caeb63b7b794e3dc",
+      "size_bytes": 181
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-app",
+      "relative_path": "runner/__pycache__/evaluate.cpython-312.pyc",
+      "sha256": "8453b131d91425638e2a19f0e8ea85871cfa0e1ced29a8cba3e4155287e7e3f3",
+      "size_bytes": 35815
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "C-app",
+      "relative_path": "servers/__pycache__/mcp_protocol.cpython-312.pyc",
+      "sha256": "8ba22aff3424f4f30513d82cc17aa7dc38230ccb5e4d299a271faaf6d6fd9515",
+      "size_bytes": 8828
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-app",
+      "relative_path": "workspace/data/config.json",
+      "sha256": "e0e77b70ca77d0be8f321590c0deb449d364cc3c4edaeaa6eef40636d56a298e",
+      "size_bytes": 19
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-app",
+      "relative_path": "workspace/home/.aws/credentials",
+      "sha256": "8298c257690ebc6b477a0aa197bfd8f28978b784214b0aafcbd53ee8b790031b",
+      "size_bytes": 103
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-app",
+      "relative_path": "workspace/home/.env",
+      "sha256": "5108c5692b005f3b262fe7a3b188d2c55730bfbfcd85dcf68e5a2459d9f8efbf",
+      "size_bytes": 75
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-app",
+      "relative_path": "workspace/home/.gitconfig",
+      "sha256": "16cc6037f78c304bd9409b9a2512c26edd7387e6e552ee06573e24e304f4a4d9",
+      "size_bytes": 59
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-app",
+      "relative_path": "workspace/home/.ssh/id_rsa",
+      "sha256": "915852ea2de1c3fc16513072f6876c4fb9ae4e823206c7b3f55905143afe8aeb",
+      "size_bytes": 102
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-app",
+      "relative_path": "workspace/output/report.txt",
+      "sha256": "f4f9b6242446d02fc0dba6208df46fff88035d5b66544bc7d2f5b0f31d023980",
+      "size_bytes": 40
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "exact upstream deterministic workspace fixture path",
+      "producing_configuration": "C-app",
+      "relative_path": "workspace/readme.txt",
+      "sha256": "2a419ea7654a011d2dbcccbea01d01038541e84b9d1a7e01138b5a29bbedc29a",
+      "size_bytes": 33
+    }
+  ],
+  "cached_diff_clean": true,
+  "configuration": "C-app",
+  "head": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+  "head_exact": true,
+  "path": "<LOCAL_HOME>/abl-benchmark-run-20260914-attempt-03/mcpguard-C-app",
+  "runtime_artifact_count": 20,
+  "runtime_artifacts_present": true,
+  "status_porcelain": "?? notes_data/62a98f00.json\n?? notes_data/6a66cea4.json\n?? notes_data/881cec73.json",
+  "tracked_source_clean": true,
+  "tree": "ee0acc5993c1363391efab169c04c7d02f203378",
+  "tree_exact": true,
+  "unexpected_artifact_count": 0
+}

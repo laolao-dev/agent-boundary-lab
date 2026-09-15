@@ -1,0 +1,28 @@
+{
+  "all": {
+    "ALLOW": 49,
+    "DENY": 0,
+    "REQUIRE_APPROVAL": 33,
+    "unmatched_fail_closed": 0
+  },
+  "attacks": {
+    "ALLOW": 36,
+    "DENY": 0,
+    "REQUIRE_APPROVAL": 25,
+    "unmatched_fail_closed": 0
+  },
+  "audit_records": 82,
+  "benign": {
+    "ALLOW": 13,
+    "DENY": 0,
+    "REQUIRE_APPROVAL": 8,
+    "unmatched_fail_closed": 0
+  },
+  "blocked_breakdown": {
+    "REQUIRE_APPROVAL": 33,
+    "explicit_DENY": 0,
+    "unmatched_fail_closed": 0
+  },
+  "dispatched_calls": 49,
+  "pre_dispatch_blocked_calls": 33
+}

@@ -1,0 +1,494 @@
+{
+  "arguments_used_for_decisions": false,
+  "default_unmatched": "DENY",
+  "policy_type": "ABL v0.1 exact MCP server/tool targets",
+  "rules": [
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "get"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_001",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: get)",
+      "target": "mcp:env_server/get_config"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "list"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_002",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: list)",
+      "target": "mcp:env_server/list_configs"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "set"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_003",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: set)",
+      "target": "mcp:env_server/set_config"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "list"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_004",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: list)",
+      "target": "mcp:filesystem_server/list_dir"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "read"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_005",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: read)",
+      "target": "mcp:filesystem_server/read_file"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "write"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_006",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: write)",
+      "target": "mcp:filesystem_server/write_file"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "diff"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_007",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: diff)",
+      "target": "mcp:git_server/git_diff"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "log"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_008",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: log)",
+      "target": "mcp:git_server/git_log"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "status"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_009",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: status)",
+      "target": "mcp:git_server/git_status"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "list"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_010",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: list)",
+      "target": "mcp:js_filesystem_server/list_dir"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "read"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_011",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: read)",
+      "target": "mcp:js_filesystem_server/read_file"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "write"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_012",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: write)",
+      "target": "mcp:js_filesystem_server/write_file"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "analyze"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_013",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: analyze)",
+      "target": "mcp:js_malicious_server/analyze"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "summarize"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_014",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: summarize)",
+      "target": "mcp:js_malicious_server/summarize"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "translate"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_015",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: translate)",
+      "target": "mcp:js_malicious_server/translate"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "insert"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_016",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: insert)",
+      "target": "mcp:js_sqlite_server/insert"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "list"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_017",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: list)",
+      "target": "mcp:js_sqlite_server/list_tables"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "execute"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_018",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: execute)",
+      "target": "mcp:js_sqlite_server/query"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "analyze"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_019",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: analyze)",
+      "target": "mcp:malicious_server/analyze"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "format"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_020",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: format)",
+      "target": "mcp:malicious_server/format_text"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "spellcheck"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_021",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: spellcheck)",
+      "target": "mcp:malicious_server/spellcheck"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "summarize"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_022",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: summarize)",
+      "target": "mcp:malicious_server/summarize"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "translate"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_023",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: translate)",
+      "target": "mcp:malicious_server/translate"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "word count"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_024",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: word count)",
+      "target": "mcp:malicious_server/word_count"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "create"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_025",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: create)",
+      "target": "mcp:notes_server/create_note"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "read"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_026",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: read)",
+      "target": "mcp:notes_server/read_note"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "search"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_027",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: search)",
+      "target": "mcp:notes_server/search_notes"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "execute"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_028",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: execute)",
+      "target": "mcp:shell_server/run_command"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "insert"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_029",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: insert)",
+      "target": "mcp:sqlite_server/insert"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "list"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_030",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: list)",
+      "target": "mcp:sqlite_server/list_tables"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "execute"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_031",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: execute)",
+      "target": "mcp:sqlite_server/query"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "diff"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_032",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: diff)",
+      "target": "mcp:trojan_git_server/git_diff"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "log"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_033",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: log)",
+      "target": "mcp:trojan_git_server/git_log"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "status"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_034",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: status)",
+      "target": "mcp:trojan_git_server/git_status"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "create"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_035",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: create)",
+      "target": "mcp:trojan_server/create_note"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "delete"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_036",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: delete)",
+      "target": "mcp:trojan_server/delete_note"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "export"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_037",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: export)",
+      "target": "mcp:trojan_server/export_notes"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "read"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_038",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: read)",
+      "target": "mcp:trojan_server/read_note"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "search"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_039",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: search)",
+      "target": "mcp:trojan_server/search_notes"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "insert"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_040",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: insert)",
+      "target": "mcp:trojan_sqlite_server/insert"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "list"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_041",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: list)",
+      "target": "mcp:trojan_sqlite_server/list_tables"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "require_approval",
+        "signal": "execute"
+      },
+      "decision": "REQUIRE_APPROVAL",
+      "name": "mcpguard_schema_rule_042",
+      "reason": "Schema-only rubric: require_approval (advertised capability signal: execute)",
+      "target": "mcp:trojan_sqlite_server/query"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "forecast"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_043",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: forecast)",
+      "target": "mcp:weather_server/get_forecast"
+    },
+    {
+      "action_type": "MCP_TOOL_CALL",
+      "classification": {
+        "rubric_rule": "read_only_allow",
+        "signal": "get"
+      },
+      "decision": "ALLOW",
+      "name": "mcpguard_schema_rule_044",
+      "reason": "Schema-only rubric: read_only_allow (advertised capability signal: get)",
+      "target": "mcp:weather_server/get_weather"
+    }
+  ],
+  "source_rubric_sha256": "e1182dac59151d2787e3de445eb85c852980fd249d7f51dda12008ea23485f7c",
+  "source_tool_manifest_sha256": "7b4d4bca733e8edb314c6dc30fd795cf8e7b06fe11732373eb58a444dca41d71",
+  "version": "1.0.0"
+}

@@ -1,98 +1,103 @@
 # Agent Boundary Lab
 
-Agent Boundary Lab is an alpha trust-verification prototype for making an
-agent-like action explicit, deciding whether it may be dispatched, and recording
-the result as deterministic evidence.
+## Research-Agent Workflow Assurance & Adversarial Verification
+
+> “We verify why a multi-step research-agent workflow should be trusted.”
+
+Agent Boundary Lab (ABL) is an alpha research prototype for making trust claims
+about a multi-step research-agent workflow inspectable. It connects governance,
+provenance, human-review evidence, audit completeness, reproducibility, and
+adversarial boundary testing without claiming that the full target product is
+already implemented.
+
+```text
+Research-agent workflow
+    ↓
+Governance verification
+    ↓
+Provenance / evidence lineage
+    ↓
+Human review / approval evidence
+    ↓
+Audit completeness
+    ↓
+Adversarial boundary testing
+    ↓
+Assurance Report + Evidence Bundle
+```
 
 Public alpha: `0.1.0-alpha` (Python package version `0.1.0a1`).
 
-## What it does
+## Product boundary
 
-```text
-Agent action
-    -> Boundary decision
-    -> Dispatch / Block
-    -> Structured audit
-    -> Provenance
-    -> Boundary stress testing
-```
+ABL's core object is the whole multi-step research-agent workflow, represented
+by a workflow, trace, adapter, and evidence. The target outputs are an Assurance
+Report, an Evidence Bundle, findings, and regression scenarios.
 
-The repository contains a small deterministic Boundary Harness, a synthetic
-research workflow, a bounded synthetic attack-search experiment, and an optional
-research-data anchor for real OpenAlex scholarly metadata.
+The current `ALLOW` / `DENY` / `REQUIRE_APPROVAL` logic is a governance detector,
+not the whole product. Audit records are trace evidence; provenance records are
+evidence-lineage components; approval records are evidence about a modeled
+human-review point; and Attack Search is an adversarial-assurance experiment.
+The MCPGuard-Dynamic benchmark is technical validation evidence produced by the
+ABL project, not a product certification.
 
-## Quick Start
+ABL is not presented as a generic MCP gateway, generic policy engine, agent
+firewall, enterprise security platform, generic observability tool, or generic
+citation checker.
+
+## Currently implemented
+
+- A deterministic boundary/governance harness with explicit `ALLOW`, `DENY`, and
+  `REQUIRE_APPROVAL` decisions and pre-dispatch enforcement.
+- Structured audit and identifier-level provenance components.
+- A synthetic multi-step research workflow with a fixed approval fixture.
+- A bounded, seeded Attack Search experiment and a preserved regression case.
+- A replay-first OpenAlex research-data anchor with optional live metadata access.
+- A frozen MCPGuard-Dynamic evaluation and public sanitized evidence copies.
+
+## Target product direction
+
+- Full workflow-level assurance across research-agent traces and adapters.
+- A reviewable Assurance Report.
+- A reproducible Evidence Bundle.
+- Research-specific governance, provenance, review, audit, and adversarial
+  verification.
+
+These are product directions, not completed v0.1 capabilities. The repository
+does not yet provide a complete end-to-end verifier, production workflow support,
+an authenticated human-approval system, broad research-agent integrations, or
+evidence of design partners or users.
+
+## Quick start
 
 Python 3.12 and [uv](https://docs.astral.sh/uv/) are required.
 
 ```console
-uv sync
+uv sync --locked
 uv run pytest
 uv run python -m agent_boundary_lab.research_data_demo
 ```
 
-This default path is fully local: it requires no API key, starts no MCP server,
-and makes no network request. The demo replays a small checked-in metadata
-fixture.
-
-## What you should see
-
-The replay demo clearly labels its mode and shows the two policy outcomes:
-
-```text
-MODE: REPLAY (OFFLINE FIXTURE)
-
-ALLOW
-  Boundary decision: ALLOW
-  Dispatched: YES
-
-DENY
-  Boundary decision: DENY
-  Dispatched: NO
-  Result: BLOCKED_PRE_DISPATCH
-
-PROVENANCE
-  ... -> research_evidence_bundle
-
-AUDIT
-  Records: 2
-```
-
-It writes deterministic, machine-readable replay evidence to
+The default demo is fully local: it requires no API key, starts no MCP server,
+and makes no network request. It replays a small checked-in scholarly-metadata
+fixture and writes deterministic evidence to
 `artifacts/openalex_mcp_evidence.json`.
 
-## Real OpenAlex integration
-
-Live mode is optional:
-
-```console
-uv run python -m agent_boundary_lab.research_data_demo --live
-```
-
-It requires `OPENALEX_API_KEY`, network access, `npx`, and the pinned
-`@cyanheads/openalex-mcp-server` package. This is a community OpenAlex MCP server,
-not an official OpenAlex MCP server. The integration retains only bounded
-scholarly metadata; it does not download or synthesize full text.
-
-The pre-dispatch policy decision occurs before transport dispatch. The configured
-publication search is allowed and dispatched, while the citation-graph intent is
-denied with a transport call count of zero. Audit output never includes the API
-key.
-
-## Architecture
+## Architecture in v0.1
 
 - **Boundary Harness** — exact action/target rules produce `ALLOW`, `DENY`, or
-  `REQUIRE_APPROVAL`; unmatched actions fail closed inside the modeled harness.
+  `REQUIRE_APPROVAL`; unmatched modeled actions fail closed.
 - **Research Workflow** — a deterministic synthetic workflow demonstrates
-  boundary decisions, a fixed approval fixture, structured audit records, and
-  minimal provenance.
+  governance decisions, a fixed approval fixture, audit records, and minimal
+  provenance.
 - **Attack Search** — seeded Random and simplified TraceGuided strategies search
-  an intentionally vulnerable synthetic fixture and preserve a discovered case
-  as a regression test.
-- **MCP Research Data Anchor** — one narrow OpenAlex policy and transport seam
-  supports offline replay plus explicitly selected live metadata access.
+  an intentionally vulnerable synthetic fixture under the same fixed budget.
+- **OpenAlex Research-Data Anchor** — a narrow policy and transport seam supports
+  offline replay plus explicitly selected live scholarly-metadata access.
+- **MCPGuard-Dynamic Integration** — a frozen adapter, policy rubric/manifests,
+  conformance support, and tests preserve the evaluated pre-dispatch layer.
 
-Additional local demos are available with:
+Additional local demos:
 
 ```console
 uv run python -m agent_boundary_lab
@@ -100,43 +105,49 @@ uv run python -m agent_boundary_lab.experiment
 uv run python -m agent_boundary_lab.grant_demo
 ```
 
-## Attack Search Experiment
+Live OpenAlex mode is optional and explicitly selected with
+`uv run python -m agent_boundary_lab.research_data_demo --live`. It requires the
+user's own API key, network access, `npx`, and the pinned community
+`@cyanheads/openalex-mcp-server` package. The default validation path never uses
+it.
 
-The checked-in experiment has a candidate space of 8, a budget of 3 candidate
-evaluations per run, and 20 fixed seeds. Its deterministic results are:
+## External benchmark evidence
 
-| Strategy | Synthetic violations discovered |
-| --- | ---: |
-| Random | 7/20 |
-| TraceGuided | 20/20 |
+The frozen MCPGuard-Dynamic evaluation tests ABL v0.1's current pre-dispatch
+governance / adversarial-verification layer. It does not validate the whole
+future workflow-assurance system.
 
-TraceGuided uses only prior `ExecutionRecord` data; neither strategy receives
-expected decisions or violation labels. This is a bounded synthetic benchmark and
-does not establish general vulnerability-detection performance.
+- V-APR: **43.8% (21/48)**
+- FPR: **38.1% (8/21)**
+- Benign success: **61.9% (13/21)**
+
+This is a security–utility tradeoff, not a superiority result. Read the
+[public benchmark report](docs/benchmarks/mcpguard_dynamic_v01.md) and inspect
+the [sanitized public evidence copies](benchmarks/mcpguard_dynamic/public_evidence/).
+
+The Agent Boundary Lab project executed the evaluation itself. “External”
+describes the benchmark source; it does not mean that Meta, the MCPGuard-Dynamic
+authors, a third-party laboratory, or an independent auditor performed,
+certified, or endorsed the evaluation.
 
 ## Current limitations
 
-- This is an alpha prototype, not production security enforcement, an operating-
-  system sandbox, or evidence of institutional or regulatory compliance.
-- It models agent-like actions in process. It does not run a real AI agent,
-  intercept real filesystem/network operations, or provide adapters for arbitrary
-  agents.
-- Policies use a small exact-match model. Results do not establish universal
-  attack detection or protection outside the modeled scenarios.
-- The attack-search result is from one bounded, intentionally vulnerable synthetic
-  fixture; it is not discovery of a vulnerability in a real agent or system.
-- The approval step is a fixed synthetic fixture. It does not authenticate a human
-  approver or establish a real approval identity.
-- Audit and provenance are structured and deterministic, but are not immutable,
+- v0.1 is an alpha research prototype, not production security enforcement, an
+  operating-system sandbox, or proof of compliance.
+- It models actions in process; it does not run a real AI agent or intercept
+  arbitrary filesystem and network operations.
+- The policy uses a small exact-target model. Benchmark results do not establish
+  universal attack detection or protection outside the frozen cases.
+- The synthetic approval fixture does not authenticate a human or implement a
+  real approval service.
+- Audit and provenance are structured and deterministic, but not immutable,
   externally attested, or tamper-proof.
-- The OpenAlex live path uses a pinned community MCP package, not an official
-  OpenAlex MCP server. It covers one narrow scholarly-metadata flow and requires
-  the user to supply their own API key.
-- No full text is downloaded or synthesized. Paper contents, completeness, and
-  authenticity are not verified.
-- Replay evidence is a checked-in point-in-time fixture and does not validate the
-  availability or behavior of the live service.
-- The project provides neither a generic MCP framework nor write operations.
+- The bounded Attack Search fixture does not establish performance on real
+  systems.
+- The OpenAlex live path covers one narrow metadata flow and uses a community MCP
+  package, not an official OpenAlex MCP server.
+- No full text is downloaded or synthesized; content authenticity and
+  completeness are not verified.
 
-See [SECURITY.md](SECURITY.md) before using or reporting security-sensitive test
-cases. Contributions should follow [CONTRIBUTING.md](CONTRIBUTING.md).
+See [SECURITY.md](SECURITY.md) before reporting security-sensitive cases.
+Contributions should follow [CONTRIBUTING.md](CONTRIBUTING.md).

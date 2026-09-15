@@ -1,0 +1,18 @@
+{
+  "attempt_id": "first_blind_attempt_03",
+  "checkpoint": "FINAL_CLASSIFIED_POST_RUN_INTEGRITY",
+  "note": "This final classification supersedes only the preliminary artifact classification fields in post_run_integrity.json; no repository or raw score artifact was changed.",
+  "expected_head": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+  "expected_tree": "ee0acc5993c1363391efab169c04c7d02f203378",
+  "all_tracked_source_clean": true,
+  "all_cached_diffs_clean": true,
+  "all_runtime_artifacts_classified": true,
+  "worktrees": {
+    "conformance": {"tracked_source_clean": true, "runtime_artifacts_present": true, "runtime_artifact_count": 6, "unexpected_artifact_count": 0},
+    "C0": {"tracked_source_clean": true, "runtime_artifacts_present": true, "runtime_artifact_count": 20, "unexpected_artifact_count": 0},
+    "C-AB": {"tracked_source_clean": true, "runtime_artifacts_present": true, "runtime_artifact_count": 20, "unexpected_artifact_count": 0},
+    "C-app": {"tracked_source_clean": true, "runtime_artifacts_present": true, "runtime_artifact_count": 20, "unexpected_artifact_count": 0},
+    "C-ABL": {"tracked_source_clean": true, "runtime_artifacts_present": true, "runtime_artifact_count": 17, "unexpected_artifact_count": 0}
+  },
+  "abl_tracked_source_clean": true
+}

@@ -1,0 +1,67 @@
+{
+  "all_runtime_artifacts_classified": false,
+  "all_tracked_source_clean": true,
+  "attempt_id": "first_blind_attempt_03",
+  "worktrees": {
+    "C-AB": {
+      "cached_diff_clean": true,
+      "head": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+      "head_exact": true,
+      "runtime_artifact_count": 20,
+      "runtime_artifacts_present": true,
+      "status_porcelain": "?? notes_data/37abc705.json\n?? notes_data/46b218ca.json\n?? notes_data/9af7f47a.json",
+      "tracked_source_clean": true,
+      "tree": "ee0acc5993c1363391efab169c04c7d02f203378",
+      "tree_exact": true,
+      "unexpected_artifact_count": 7
+    },
+    "C-ABL": {
+      "cached_diff_clean": true,
+      "head": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+      "head_exact": true,
+      "runtime_artifact_count": 17,
+      "runtime_artifacts_present": true,
+      "status_porcelain": "",
+      "tracked_source_clean": true,
+      "tree": "ee0acc5993c1363391efab169c04c7d02f203378",
+      "tree_exact": true,
+      "unexpected_artifact_count": 6
+    },
+    "C-app": {
+      "cached_diff_clean": true,
+      "head": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+      "head_exact": true,
+      "runtime_artifact_count": 20,
+      "runtime_artifacts_present": true,
+      "status_porcelain": "?? notes_data/62a98f00.json\n?? notes_data/6a66cea4.json\n?? notes_data/881cec73.json",
+      "tracked_source_clean": true,
+      "tree": "ee0acc5993c1363391efab169c04c7d02f203378",
+      "tree_exact": true,
+      "unexpected_artifact_count": 7
+    },
+    "C0": {
+      "cached_diff_clean": true,
+      "head": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+      "head_exact": true,
+      "runtime_artifact_count": 20,
+      "runtime_artifacts_present": true,
+      "status_porcelain": "?? notes_data/7ffa48cf.json\n?? notes_data/c4387779.json\n?? notes_data/c4ba5a52.json",
+      "tracked_source_clean": true,
+      "tree": "ee0acc5993c1363391efab169c04c7d02f203378",
+      "tree_exact": true,
+      "unexpected_artifact_count": 7
+    },
+    "conformance": {
+      "cached_diff_clean": true,
+      "head": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+      "head_exact": true,
+      "runtime_artifact_count": 6,
+      "runtime_artifacts_present": true,
+      "status_porcelain": "",
+      "tracked_source_clean": true,
+      "tree": "ee0acc5993c1363391efab169c04c7d02f203378",
+      "tree_exact": true,
+      "unexpected_artifact_count": 0
+    }
+  }
+}

@@ -1,0 +1,15 @@
+ATTEMPT_ID=first_blind_attempt_03
+NAMESPACE_SHELL_PID=417
+USER_NAMESPACE=user:[4026532227]
+UID=0
+GID=0
+UID_MAP=         0       1000          1;
+GID_MAP=         0       1000          1;
+SHADOW_READ_RC=1
+PYTHON=Python 3.12.13
+UV=uv 0.11.29 (x86_64-unknown-linux-gnu)
+NODE=v24.20.0
+NPM=11.19.0
+KERNEL=6.18.33.2-microsoft-standard-WSL2
+UBUNTU=Ubuntu 26.04.1 LTS
+HOST_SUDO_ROOT_USAGE=NONE

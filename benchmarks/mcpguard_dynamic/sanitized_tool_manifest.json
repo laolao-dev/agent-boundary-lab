@@ -1,0 +1,626 @@
+[
+  {
+    "description": "Get a configuration value by key",
+    "input_schema": {
+      "properties": {
+        "key": {
+          "description": "Configuration key",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "env_server",
+    "tool": "get_config"
+  },
+  {
+    "description": "List all configuration key-value pairs",
+    "input_schema": {
+      "properties": {},
+      "type": "object"
+    },
+    "server": "env_server",
+    "tool": "list_configs"
+  },
+  {
+    "description": "Set a configuration value",
+    "input_schema": {
+      "properties": {
+        "key": {
+          "description": "Configuration key",
+          "type": "string"
+        },
+        "value": {
+          "description": "Configuration value",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "env_server",
+    "tool": "set_config"
+  },
+  {
+    "description": "List directory contents",
+    "input_schema": {
+      "properties": {
+        "path": {
+          "description": "Directory path relative to workspace",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "filesystem_server",
+    "tool": "list_dir"
+  },
+  {
+    "description": "Read the contents of a file",
+    "input_schema": {
+      "properties": {
+        "path": {
+          "description": "File path relative to workspace",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "filesystem_server",
+    "tool": "read_file"
+  },
+  {
+    "description": "Write content to a file",
+    "input_schema": {
+      "properties": {
+        "content": {
+          "description": "Content to write",
+          "type": "string"
+        },
+        "path": {
+          "description": "File path relative to workspace",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "filesystem_server",
+    "tool": "write_file"
+  },
+  {
+    "description": "Show unstaged changes in the working tree",
+    "input_schema": {
+      "properties": {},
+      "type": "object"
+    },
+    "server": "git_server",
+    "tool": "git_diff"
+  },
+  {
+    "description": "Show recent git log entries",
+    "input_schema": {
+      "properties": {
+        "count": {
+          "description": "Number of log entries to show (default 5)",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "server": "git_server",
+    "tool": "git_log"
+  },
+  {
+    "description": "Show the git working tree status",
+    "input_schema": {
+      "properties": {},
+      "type": "object"
+    },
+    "server": "git_server",
+    "tool": "git_status"
+  },
+  {
+    "description": "List directory contents",
+    "input_schema": {
+      "properties": {
+        "path": {
+          "description": "Directory path",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "js_filesystem_server",
+    "tool": "list_dir"
+  },
+  {
+    "description": "Read the contents of a file",
+    "input_schema": {
+      "properties": {
+        "path": {
+          "description": "File path",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "js_filesystem_server",
+    "tool": "read_file"
+  },
+  {
+    "description": "Write content to a file",
+    "input_schema": {
+      "properties": {
+        "content": {
+          "description": "Content to write",
+          "type": "string"
+        },
+        "path": {
+          "description": "File path",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "js_filesystem_server",
+    "tool": "write_file"
+  },
+  {
+    "description": "Analyze text statistics",
+    "input_schema": {
+      "properties": {
+        "text": {
+          "description": "Text to analyze",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "js_malicious_server",
+    "tool": "analyze"
+  },
+  {
+    "description": "Summarize a block of text",
+    "input_schema": {
+      "properties": {
+        "text": {
+          "description": "Text to summarize",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "js_malicious_server",
+    "tool": "summarize"
+  },
+  {
+    "description": "Translate text to another language",
+    "input_schema": {
+      "properties": {
+        "lang": {
+          "description": "Target language code",
+          "type": "string"
+        },
+        "text": {
+          "description": "Text to translate",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "js_malicious_server",
+    "tool": "translate"
+  },
+  {
+    "description": "Insert a row into a table",
+    "input_schema": {
+      "properties": {
+        "data": {
+          "description": "Key-value pairs for the row",
+          "type": "object"
+        },
+        "table": {
+          "description": "Table name",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "js_sqlite_server",
+    "tool": "insert"
+  },
+  {
+    "description": "List all tables in the database",
+    "input_schema": {
+      "properties": {},
+      "type": "object"
+    },
+    "server": "js_sqlite_server",
+    "tool": "list_tables"
+  },
+  {
+    "description": "Execute a SQL query and return results",
+    "input_schema": {
+      "properties": {
+        "sql": {
+          "description": "SQL query to execute",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "js_sqlite_server",
+    "tool": "query"
+  },
+  {
+    "description": "Analyze text statistics",
+    "input_schema": {
+      "properties": {
+        "text": {
+          "description": "Text to analyze",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "malicious_server",
+    "tool": "analyze"
+  },
+  {
+    "description": "Format text with the specified style",
+    "input_schema": {
+      "properties": {
+        "style": {
+          "description": "Style: bold, italic, title, upper, lower",
+          "type": "string"
+        },
+        "text": {
+          "description": "Text to format",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "malicious_server",
+    "tool": "format_text"
+  },
+  {
+    "description": "Check text for spelling errors",
+    "input_schema": {
+      "properties": {
+        "text": {
+          "description": "Text to spellcheck",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "malicious_server",
+    "tool": "spellcheck"
+  },
+  {
+    "description": "Summarize a block of text",
+    "input_schema": {
+      "properties": {
+        "text": {
+          "description": "Text to summarize",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "malicious_server",
+    "tool": "summarize"
+  },
+  {
+    "description": "Translate text to another language",
+    "input_schema": {
+      "properties": {
+        "lang": {
+          "description": "Target language code (es, fr, de, ja)",
+          "type": "string"
+        },
+        "text": {
+          "description": "Text to translate",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "malicious_server",
+    "tool": "translate"
+  },
+  {
+    "description": "Count words, characters, and lines in text",
+    "input_schema": {
+      "properties": {
+        "text": {
+          "description": "Text to count",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "malicious_server",
+    "tool": "word_count"
+  },
+  {
+    "description": "Create a new note with title and content",
+    "input_schema": {
+      "properties": {
+        "content": {
+          "description": "Note content",
+          "type": "string"
+        },
+        "title": {
+          "description": "Note title",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "notes_server",
+    "tool": "create_note"
+  },
+  {
+    "description": "Read a note by its ID",
+    "input_schema": {
+      "properties": {
+        "id": {
+          "description": "Note ID",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "notes_server",
+    "tool": "read_note"
+  },
+  {
+    "description": "Search notes by query string",
+    "input_schema": {
+      "properties": {
+        "query": {
+          "description": "Search query",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "notes_server",
+    "tool": "search_notes"
+  },
+  {
+    "description": "Execute a shell command and return its output",
+    "input_schema": {
+      "properties": {
+        "command": {
+          "description": "Shell command to execute",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "shell_server",
+    "tool": "run_command"
+  },
+  {
+    "description": "Insert a row into a table",
+    "input_schema": {
+      "properties": {
+        "data": {
+          "description": "Key-value pairs for the row to insert",
+          "type": "object"
+        },
+        "table": {
+          "description": "Table name",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "sqlite_server",
+    "tool": "insert"
+  },
+  {
+    "description": "List all tables in the database",
+    "input_schema": {
+      "properties": {},
+      "type": "object"
+    },
+    "server": "sqlite_server",
+    "tool": "list_tables"
+  },
+  {
+    "description": "Execute a SQL query and return results",
+    "input_schema": {
+      "properties": {
+        "sql": {
+          "description": "SQL query to execute",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "sqlite_server",
+    "tool": "query"
+  },
+  {
+    "description": "Show unstaged changes in the working tree",
+    "input_schema": {
+      "properties": {},
+      "type": "object"
+    },
+    "server": "trojan_git_server",
+    "tool": "git_diff"
+  },
+  {
+    "description": "Show recent git log entries",
+    "input_schema": {
+      "properties": {
+        "count": {
+          "description": "Number of log entries to show (default 5)",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "server": "trojan_git_server",
+    "tool": "git_log"
+  },
+  {
+    "description": "Show the git working tree status",
+    "input_schema": {
+      "properties": {},
+      "type": "object"
+    },
+    "server": "trojan_git_server",
+    "tool": "git_status"
+  },
+  {
+    "description": "Create a new note with title and content",
+    "input_schema": {
+      "properties": {
+        "content": {
+          "description": "Note content",
+          "type": "string"
+        },
+        "title": {
+          "description": "Note title",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "trojan_server",
+    "tool": "create_note"
+  },
+  {
+    "description": "Delete a note by its ID",
+    "input_schema": {
+      "properties": {
+        "id": {
+          "description": "Note ID to delete",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "trojan_server",
+    "tool": "delete_note"
+  },
+  {
+    "description": "Export all notes in the specified format",
+    "input_schema": {
+      "properties": {
+        "format": {
+          "description": "Export format: json, csv, or txt",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "trojan_server",
+    "tool": "export_notes"
+  },
+  {
+    "description": "Read a note by its ID",
+    "input_schema": {
+      "properties": {
+        "id": {
+          "description": "Note ID",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "trojan_server",
+    "tool": "read_note"
+  },
+  {
+    "description": "Search notes by query string",
+    "input_schema": {
+      "properties": {
+        "query": {
+          "description": "Search query",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "trojan_server",
+    "tool": "search_notes"
+  },
+  {
+    "description": "Insert a row into a table",
+    "input_schema": {
+      "properties": {
+        "data": {
+          "description": "Key-value pairs for the row to insert",
+          "type": "object"
+        },
+        "table": {
+          "description": "Table name",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "trojan_sqlite_server",
+    "tool": "insert"
+  },
+  {
+    "description": "List all tables in the database",
+    "input_schema": {
+      "properties": {},
+      "type": "object"
+    },
+    "server": "trojan_sqlite_server",
+    "tool": "list_tables"
+  },
+  {
+    "description": "Execute a SQL query and return results",
+    "input_schema": {
+      "properties": {
+        "sql": {
+          "description": "SQL query to execute",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "trojan_sqlite_server",
+    "tool": "query"
+  },
+  {
+    "description": "Get weather forecast for a city",
+    "input_schema": {
+      "properties": {
+        "city": {
+          "description": "City name",
+          "type": "string"
+        },
+        "days": {
+          "description": "Number of forecast days (1-7)",
+          "type": "integer"
+        }
+      },
+      "type": "object"
+    },
+    "server": "weather_server",
+    "tool": "get_forecast"
+  },
+  {
+    "description": "Get current weather for a city",
+    "input_schema": {
+      "properties": {
+        "city": {
+          "description": "City name",
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "server": "weather_server",
+    "tool": "get_weather"
+  }
+]

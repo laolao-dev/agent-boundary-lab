@@ -1,0 +1,65 @@
+{
+  "all_artifacts_classified": true,
+  "artifacts": [
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "conformance",
+      "relative_path": "proxy/__pycache__/__init__.cpython-312.pyc",
+      "sha256": "7161198bbab8edea59829b1e6c65100e688304ef6df6647b1d0a614e2e77f8c8",
+      "size_bytes": 186
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "conformance",
+      "relative_path": "proxy/__pycache__/agentbound_baseline.cpython-312.pyc",
+      "sha256": "34090f5a028c8937a1b5d2a8f00c494f38309181b0e37247238e4c6791b0946a",
+      "size_bytes": 7470
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "conformance",
+      "relative_path": "proxy/__pycache__/argument_validator.cpython-312.pyc",
+      "sha256": "d3841a478a90ef7c129064ab392acb4b7ce8f9d96f4ae04f01e7014af79bef0e",
+      "size_bytes": 11227
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "conformance",
+      "relative_path": "proxy/__pycache__/ebpf_sandbox.cpython-312.pyc",
+      "sha256": "a7ee1cd8a01c859b60a5f70921c717463c078dda0155f5178415d259b9a3282a",
+      "size_bytes": 32239
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "conformance",
+      "relative_path": "proxy/__pycache__/policy_engine.cpython-312.pyc",
+      "sha256": "60f07ab7924c0932f5dcac50bf94c9fee0f570295e1cfc38be50c5360e63cb3d",
+      "size_bytes": 12488
+    },
+    {
+      "classification": "EXPECTED_RUNTIME_ARTIFACT",
+      "classification_reason": "Python bytecode cache created by execution",
+      "producing_configuration": "conformance",
+      "relative_path": "proxy/__pycache__/proxy_base.cpython-312.pyc",
+      "sha256": "6d0476895b6f3a244087ce95a8d4b30aae0f733f213f43cd99744078ad004deb",
+      "size_bytes": 20080
+    }
+  ],
+  "cached_diff_clean": true,
+  "configuration": "conformance",
+  "head": "f36a2f593cb7fbc4cbf3a8a6770ed28426371b68",
+  "head_exact": true,
+  "path": "<LOCAL_HOME>/abl-benchmark-run-20260914-attempt-03/mcpguard-conformance",
+  "runtime_artifact_count": 6,
+  "runtime_artifacts_present": true,
+  "status_porcelain": "",
+  "tracked_source_clean": true,
+  "tree": "ee0acc5993c1363391efab169c04c7d02f203378",
+  "tree_exact": true,
+  "unexpected_artifact_count": 0
+}

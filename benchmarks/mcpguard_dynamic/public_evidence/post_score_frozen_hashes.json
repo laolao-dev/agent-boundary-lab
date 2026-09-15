@@ -1,0 +1,18 @@
+{
+  "actual": {
+    "adapter_working_sha256": "b9abd0dc52da2553113dadfaab2050c8b992b5d7b5b8f807c58cb9b2844d92ca",
+    "benchmark_manifest_sha256": "45d7ba23a0edff8932d0ebadb755f7faf9bfe76d1d6401062a44e9234da6dc4c",
+    "policy_sha256": "c65f2edbb1b2721810f274f1afc24f163a0c606d29bbb02389519d813c41f0bb",
+    "rubric_sha256": "e1182dac59151d2787e3de445eb85c852980fd249d7f51dda12008ea23485f7c",
+    "tool_manifest_sha256": "7b4d4bca733e8edb314c6dc30fd795cf8e7b06fe11732373eb58a444dca41d71"
+  },
+  "all_match": true,
+  "checkpoint": "POST_SCORE_FROZEN_HASHES",
+  "expected": {
+    "adapter_working_sha256": "b9abd0dc52da2553113dadfaab2050c8b992b5d7b5b8f807c58cb9b2844d92ca",
+    "benchmark_manifest_sha256": "45d7ba23a0edff8932d0ebadb755f7faf9bfe76d1d6401062a44e9234da6dc4c",
+    "policy_sha256": "c65f2edbb1b2721810f274f1afc24f163a0c606d29bbb02389519d813c41f0bb",
+    "rubric_sha256": "e1182dac59151d2787e3de445eb85c852980fd249d7f51dda12008ea23485f7c",
+    "tool_manifest_sha256": "7b4d4bca733e8edb314c6dc30fd795cf8e7b06fe11732373eb58a444dca41d71"
+  }
+}
