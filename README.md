@@ -104,6 +104,14 @@ sanitized v0.1 MCPGuard evidence. A broader reproducible Evidence Bundle,
 production workflow adapters, authenticated review, and content-level
 verification remain future work. No design-partner or user validation is claimed.
 
+## v0.2 validation
+
+ABL has been tested against two external workflow architectures, frozen
+BrowseComp-Plus trajectories, an ABL-owned adversarial assurance exam, and 100
+LRAT trajectories. The [v0.2 validation evidence](docs/validation/v02-validation.md)
+records the initial provenance false-PASS discovery, the general fix and retests,
+and the limits of each bounded result. ABL performed these evaluations; the
+external projects did not certify or endorse them.
 ## Architecture in v0.1
 
 - **Boundary Harness** — exact action/target rules produce `ALLOW`, `DENY`, or
@@ -134,7 +142,7 @@ it.
 
 ## External benchmark evidence
 
-The frozen MCPGuard-Dynamic evaluation tests ABL v0.1's current pre-dispatch
+The frozen MCPGuard-Dynamic evaluation documents historical v0.1 pre-dispatch
 governance / adversarial-verification layer. It does not validate the whole
 future workflow-assurance system.
 

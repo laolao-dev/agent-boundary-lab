@@ -1,0 +1,190 @@
+{
+  "baseline_commit": "daed3e9e355001fb5ca884ae2963619f09e32b6d",
+  "cross_study_schema_decision": "REVISION_JUSTIFIED",
+  "evaluator": "Agent Boundary Lab project",
+  "limitations": [
+    "No universal error rate, production safety, factual correctness, or independent certification is established.",
+    "External project authors did not perform or endorse the ABL evaluations.",
+    "Raw third-party trajectories and report bodies are not redistributed."
+  ],
+  "scope_note": "This document aggregates frozen historical schema and verifier revisions; not every study ran package 0.2.0a1.",
+  "studies": [
+    {
+      "decision": "C — SCHEMA_REVISION_REQUIRED",
+      "id": "schema_fit_01",
+      "limitations": [
+        "Tested an earlier ABL development schema, not the current package.",
+        "No external-project security conclusion."
+      ],
+      "run_counts": {
+        "native_offline_runs": 1,
+        "trace_events": 11
+      },
+      "source": {
+        "name": "deep-research-agent",
+        "pinned_commit": "1741dc85b6ee69058a8b748a94190d6b547b86f7",
+        "url": "https://github.com/Xrrr1111/deep-research-agent"
+      }
+    },
+    {
+      "decision": "B — FIT_WITH_ADAPTER",
+      "id": "schema_fit_02",
+      "limitations": [
+        "Historical revised schema retained structural mapping loss.",
+        "No lossless production adapter or external-project security conclusion."
+      ],
+      "run_counts": {
+        "native_offline_runs": 1,
+        "trace_events": 33
+      },
+      "source": {
+        "name": "OpenResearchGraph",
+        "pinned_commit": "f8ad69ebb15607590e3ee4c79b85db87d55389d6",
+        "url": "https://github.com/wjarchy/OpenResearchGraph"
+      }
+    },
+    {
+      "case_counts": {
+        "sampled": 20,
+        "strict_parse_successes": 20
+      },
+      "confirmed_false_complete": 0,
+      "confirmed_false_pass": 20,
+      "decision": "FAIL",
+      "id": "browsecomp_plus_initial",
+      "limitations": [
+        "Historical pre-fix verifier on one frozen trajectory run and sample.",
+        "False PASS describes recorded ABL provenance coverage, not source-agent security."
+      ],
+      "source": {
+        "benchmark_commit": "046949032b0328319cc9a02663a759ec601d9402",
+        "benchmark_url": "https://github.com/texttron/BrowseComp-Plus",
+        "dataset_revision": "3c2b136c6382d2f7d43587bbc0a77f68b024c339",
+        "dataset_url": "https://huggingface.co/datasets/Tevatron/browsecomp-plus-runs",
+        "name": "BrowseComp-Plus official run data"
+      },
+      "status_counts": {
+        "PROVENANCE": {
+          "PASS": 20
+        },
+        "overall": {
+          "COMPLETE": 0
+        }
+      }
+    },
+    {
+      "case_counts": {
+        "original_frozen_cases": 20,
+        "strict_parse_successes": 20
+      },
+      "confirmed_false_complete": 0,
+      "confirmed_false_pass": 0,
+      "decision": "PASS",
+      "id": "browsecomp_plus_retest",
+      "limitations": [
+        "Same original frozen cases and recorded source/evidence links.",
+        "Grounding tests identifier paths, not factual support."
+      ],
+      "source_study": "browsecomp_plus_initial",
+      "status_counts": {
+        "PROVENANCE": {
+          "PARTIAL": 20
+        },
+        "overall": {
+          "COMPLETE": 0
+        }
+      }
+    },
+    {
+      "case_counts": {
+        "strict_parse_successes": 20,
+        "unseen_frozen_cases": 20
+      },
+      "confirmed_false_complete": 0,
+      "confirmed_false_pass": 0,
+      "id": "browsecomp_plus_unseen_holdout",
+      "limitations": [
+        "Unseen deterministic holdout from the same trajectory run, not a separate corpus.",
+        "Grounding tests identifier paths, not factual support."
+      ],
+      "source_study": "browsecomp_plus_initial",
+      "status_counts": {
+        "PROVENANCE": {
+          "PARTIAL": 20
+        },
+        "overall": {
+          "COMPLETE": 0
+        }
+      }
+    },
+    {
+      "case_counts": {
+        "adversarial": 48,
+        "expected_parser_rejections": 2,
+        "oracle_matches": 58,
+        "total": 60,
+        "unexpected_parser_rejections": 0,
+        "valid_adversarial": 46,
+        "valid_controls": 12
+      },
+      "confirmed_false_complete": 0,
+      "confirmed_false_nonpass": 0,
+      "confirmed_false_pass": 0,
+      "decision": "PASS (frozen synthetic exam only)",
+      "id": "adversarial_assurance_exam",
+      "limitations": [
+        "ABL-owned synthetic/metamorphic cases and frozen modeled oracle only.",
+        "Does not establish causal or production-security correctness."
+      ],
+      "oracle_sha256": "2228279bfc74b64b49cf33bb51dbc32ec4339c94c1efd1a3397898ef6c4d6c03"
+    },
+    {
+      "case_counts": {
+        "invention_required": 0,
+        "per_retriever": {
+          "BM25": 25,
+          "Qwen3-Embedding-0.6B": 25,
+          "Qwen3-Embedding-4B": 25,
+          "Qwen3-Embedding-8B": 25
+        },
+        "strict_parse_successes": 100,
+        "total": 100,
+        "unexpected_parser_rejections": 0
+      },
+      "confirmed_false_complete": 0,
+      "confirmed_false_pass": 0,
+      "decision": "PASS_WITH_GAPS",
+      "id": "lrat_cross_corpus_exam",
+      "limitations": [
+        "Final-output-to-source links were not structured in the release data.",
+        "All sampled cases retain per-search document associations only in free text.",
+        "No claim about LRAT answer quality or security."
+      ],
+      "source": {
+        "dataset_revision": "26df12d39ec3eb65a30a61d86664931bb0fa4359",
+        "dataset_url": "https://huggingface.co/datasets/Yuqi-Zhou/LRAT-Train",
+        "name": "LRAT",
+        "repository_commit": "3384730b24b914ba0c0a101d648d6cb2ad0603d4",
+        "repository_url": "https://github.com/Yuqi-Zhou/LRAT"
+      },
+      "status_counts": {
+        "AUDIT": {
+          "PASS": 100
+        },
+        "GOVERNANCE": {
+          "NOT_EVALUATED": 100
+        },
+        "HUMAN_REVIEW": {
+          "NOT_EVALUATED": 100
+        },
+        "PROVENANCE": {
+          "PARTIAL": 100
+        },
+        "overall": {
+          "COMPLETE": 0
+        }
+      }
+    }
+  ],
+  "version": "0.2.0a1"
+}
