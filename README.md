@@ -95,14 +95,39 @@ approval decision.
 Approval requirements in assurance context are explicitly `REQUIRED`,
 `NOT_REQUIRED`, or `UNKNOWN`. Missing governance or approval context produces a
 `NOT_EVALUATED` check, never a fabricated pass or failure, and any
-`NOT_EVALUATED` check keeps the overall report `INCOMPLETE`. Evidence keeps
-`source_ref` separate from `parent_evidence_refs`; claims retain identifier-level
-evidence links but ABL does not validate whether claim text is true.
+`NOT_EVALUATED` check keeps the overall report `INCOMPLETE`.
 
-The checked-in `tests/fixtures/external_style_workflow.json` is a sanitized,
-manually authored synthetic structural fixture. It reflects only schema
-characteristics observed in the first external fit study; it is not a copied
-third-party trace and no production adapter or importer is included.
+Observed workflow structure now has three bounded additions derived from two
+external schema-fit studies:
+
+- `ObservedEvent.parent_event_id` represents optional execution hierarchy. The
+  parser rejects missing parents, self-parenting, and cycles, but does not infer
+  timing or causality.
+- First-class `SourceRecord` objects retain a source ID, optional type, locator,
+  title, and bounded string metadata. `Evidence.source_refs` can reference more
+  than one source while `parent_evidence_refs` remains separate evidence
+  lineage.
+- Generic `WorkflowArtifact` objects represent identities and lineage for plans,
+  checkpoints, critiques, reports, and intermediate outputs. They do not embed
+  report bodies or create storage, truth verification, or a workflow engine.
+
+Source, evidence, claim, event, artifact, and assurance-evidence references are
+checked deterministically. Insufficient provenance linkage produces a partial or
+not-evaluated result rather than a fabricated pass. Claims retain
+identifier-level evidence links, but ABL does not validate whether claim or
+source content is true.
+
+This is a breaking development-preview schema change: workflow JSON now supplies
+`sources` and `artifacts` arrays, and Evidence uses `source_refs` instead of the
+old singular `source_ref`. No compatibility importer is included.
+
+The checked-in `tests/fixtures/external_style_workflow.json` and
+`tests/fixtures/external_graph_workflow.json` files are sanitized, manually
+authored synthetic structural fixtures. They reflect only schema characteristics
+observed in the first and second external fit studies respectively; they are not
+copied third-party traces, do not contain third-party code or report content, and
+are not safety conclusions about either external project. No production adapter
+or importer is included.
 
 Run the intentionally incomplete local example with no external API calls:
 

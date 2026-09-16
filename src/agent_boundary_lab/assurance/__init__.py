@@ -15,7 +15,9 @@ from agent_boundary_lab.assurance.models import (
     ObservedEvent,
     OverallStatus,
     Severity,
+    SourceRecord,
     Workflow,
+    WorkflowArtifact,
 )
 from agent_boundary_lab.assurance.verifier import verify_workflow
 
@@ -34,6 +36,8 @@ __all__ = [
     "ObservedEvent",
     "OverallStatus",
     "Severity",
+    "SourceRecord",
     "Workflow",
+    "WorkflowArtifact",
     "verify_workflow",
 ]

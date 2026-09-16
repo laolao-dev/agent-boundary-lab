@@ -43,10 +43,18 @@ def _clean_workflow() -> dict[str, object]:
                 "sequence": 2,
             },
         ],
+        "sources": [
+            {
+                "source_id": "local-index",
+                "source_type": "local_index",
+                "locator": "local:index-query-1",
+                "title": "Bounded local index",
+            }
+        ],
         "evidence": [
             {
                 "evidence_id": "search_results",
-                "source_ref": "local:index-query-1",
+                "source_refs": ["local-index"],
                 "produced_by_event": "search",
             },
             {
@@ -63,6 +71,7 @@ def _clean_workflow() -> dict[str, object]:
                 "question_ref": "question-1",
             }
         ],
+        "artifacts": [],
         "assurance_context": {
             "events": [
                 {
@@ -95,8 +104,10 @@ def _observed_only_workflow() -> dict[str, object]:
 
 def _event_only_workflow() -> dict[str, object]:
     data = _clean_workflow()
+    data["sources"] = []
     data["evidence"] = []
     data["claims"] = []
+    data["artifacts"] = []
     for index in range(2):
         _nested(data, "events", index)["evidence_refs"] = []
     _nested(data, "assurance_context", "events", 1, "approval_record")[
@@ -186,9 +197,9 @@ def test_source_and_parent_evidence_references_remain_distinct() -> None:
     workflow = parse_workflow(_clean_workflow())
 
     source, derived = workflow.evidence
-    assert source.source_ref == "local:index-query-1"
+    assert source.source_refs == ("local-index",)
     assert source.parent_evidence_refs == ()
-    assert derived.source_ref is None
+    assert derived.source_refs == ()
     assert derived.parent_evidence_refs == ("search_results",)
 
 
@@ -219,12 +230,263 @@ def test_audit_completeness_is_evaluated_without_governance() -> None:
     assert _check(report, CheckName.AUDIT).status is CheckStatus.PASS
 
 
+def test_parent_event_reference_parses() -> None:
+    data = _clean_workflow()
+    _nested(data, "events", 1)["parent_event_id"] = "search"
+
+    workflow = parse_workflow(data)
+
+    assert workflow.events[1].parent_event_id == "search"
+
+
+def test_missing_parent_event_is_rejected() -> None:
+    data = _clean_workflow()
+    _nested(data, "events", 1)["parent_event_id"] = "missing"
+
+    with pytest.raises(WorkflowValidationError, match=r"unknown event_id 'missing'"):
+        parse_workflow(data)
+
+
+def test_self_parent_event_is_rejected() -> None:
+    data = _clean_workflow()
+    _nested(data, "events", 0)["parent_event_id"] = "search"
+
+    with pytest.raises(WorkflowValidationError, match="cannot reference itself"):
+        parse_workflow(data)
+
+
+def test_parent_event_cycle_is_rejected() -> None:
+    data = _clean_workflow()
+    _nested(data, "events", 0)["parent_event_id"] = "send"
+    _nested(data, "events", 1)["parent_event_id"] = "search"
+
+    with pytest.raises(WorkflowValidationError, match="cycle"):
+        parse_workflow(data)
+
+
+def test_multiple_source_records_and_multi_source_evidence_parse() -> None:
+    data = _clean_workflow()
+    sources = data["sources"]
+    assert isinstance(sources, list)
+    sources.append(
+        {
+            "source_id": "local-method",
+            "source_type": "method_note",
+            "locator": "local:method-note",
+            "metadata": {"synthetic": "true"},
+        }
+    )
+    _nested(data, "evidence", 0)["source_refs"] = [
+        "local-index",
+        "local-method",
+    ]
+
+    workflow = parse_workflow(data)
+
+    assert len(workflow.sources) == 2
+    assert workflow.evidence[0].source_refs == ("local-index", "local-method")
+
+
+def test_missing_source_reference_is_rejected() -> None:
+    data = _clean_workflow()
+    _nested(data, "evidence", 0)["source_refs"] = ["missing-source"]
+
+    with pytest.raises(
+        WorkflowValidationError, match=r"unknown source_id\(s\): missing-source"
+    ):
+        parse_workflow(data)
+
+
+def test_duplicate_source_id_is_rejected() -> None:
+    data = _clean_workflow()
+    sources = data["sources"]
+    assert isinstance(sources, list)
+    sources.append({"source_id": "local-index"})
+
+    with pytest.raises(WorkflowValidationError, match="duplicate identifiers"):
+        parse_workflow(data)
+
+
+def test_generic_plan_artifact_parses() -> None:
+    data = _clean_workflow()
+    data["artifacts"] = [
+        {
+            "artifact_id": "plan-1",
+            "artifact_type": "research_plan",
+            "produced_by_event": "search",
+            "source_refs": ["local-index"],
+            "metadata": {"fixture_notice": "synthetic"},
+        }
+    ]
+
+    workflow = parse_workflow(data)
+
+    assert workflow.artifacts[0].artifact_type == "research_plan"
+    assert workflow.artifacts[0].source_refs == ("local-index",)
+
+
+def test_checkpoint_parent_artifact_lineage_parses() -> None:
+    data = _clean_workflow()
+    data["artifacts"] = [
+        {
+            "artifact_id": "plan-1",
+            "artifact_type": "research_plan",
+            "produced_by_event": "search",
+        },
+        {
+            "artifact_id": "checkpoint-1",
+            "artifact_type": "checkpoint",
+            "produced_by_event": "send",
+            "parent_artifact_refs": ["plan-1"],
+        },
+    ]
+
+    workflow = parse_workflow(data)
+
+    assert workflow.artifacts[1].parent_artifact_refs == ("plan-1",)
+
+
+def test_missing_artifact_producing_event_is_rejected() -> None:
+    data = _clean_workflow()
+    data["artifacts"] = [
+        {
+            "artifact_id": "plan-1",
+            "artifact_type": "research_plan",
+            "produced_by_event": "missing-event",
+        }
+    ]
+
+    with pytest.raises(
+        WorkflowValidationError, match=r"unknown event_id 'missing-event'"
+    ):
+        parse_workflow(data)
+
+
+@pytest.mark.parametrize(
+    ("field", "reference", "expected"),
+    [
+        ("parent_artifact_refs", "missing-artifact", "unknown artifact_id"),
+        ("source_refs", "missing-source", "unknown source_id"),
+        ("evidence_refs", "missing-evidence", "unknown evidence_id"),
+    ],
+)
+def test_dangling_artifact_references_are_rejected(
+    field: str, reference: str, expected: str
+) -> None:
+    data = _clean_workflow()
+    data["artifacts"] = [
+        {
+            "artifact_id": "artifact-1",
+            "artifact_type": "synthetic",
+            field: [reference],
+        }
+    ]
+
+    with pytest.raises(WorkflowValidationError, match=expected):
+        parse_workflow(data)
+
+
+def test_artifact_cycle_is_rejected() -> None:
+    data = _clean_workflow()
+    data["artifacts"] = [
+        {
+            "artifact_id": "artifact-1",
+            "artifact_type": "checkpoint",
+            "parent_artifact_refs": ["artifact-2"],
+        },
+        {
+            "artifact_id": "artifact-2",
+            "artifact_type": "critique",
+            "parent_artifact_refs": ["artifact-1"],
+        },
+    ]
+
+    with pytest.raises(WorkflowValidationError, match="cycle"):
+        parse_workflow(data)
+
+
+def test_self_parent_artifact_is_rejected() -> None:
+    data = _clean_workflow()
+    data["artifacts"] = [
+        {
+            "artifact_id": "artifact-1",
+            "artifact_type": "checkpoint",
+            "parent_artifact_refs": ["artifact-1"],
+        }
+    ]
+
+    with pytest.raises(WorkflowValidationError, match="cannot reference itself"):
+        parse_workflow(data)
+
+
+def test_duplicate_artifact_id_is_rejected() -> None:
+    data = _clean_workflow()
+    data["artifacts"] = [
+        {"artifact_id": "duplicate", "artifact_type": "plan"},
+        {"artifact_id": "duplicate", "artifact_type": "report"},
+    ]
+
+    with pytest.raises(WorkflowValidationError, match="duplicate identifiers"):
+        parse_workflow(data)
+
+
+def test_unlinked_source_does_not_create_provenance_pass() -> None:
+    data = _clean_workflow()
+    sources = data["sources"]
+    assert isinstance(sources, list)
+    sources.append({"source_id": "unlinked", "locator": "local:unlinked"})
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PARTIAL
+    assert any("unlinked" in finding.message for finding in report.findings)
+
+
+def test_artifact_without_lineage_does_not_create_provenance_pass() -> None:
+    data = _clean_workflow()
+    data["artifacts"] = [{"artifact_id": "orphan", "artifact_type": "checkpoint"}]
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PARTIAL
+    assert any("no recorded lineage" in finding.message for finding in report.findings)
+
+
+def test_missing_evidence_producing_event_is_detected() -> None:
+    data = _clean_workflow()
+    _nested(data, "evidence", 0)["produced_by_event"] = "missing-event"
+
+    findings = _findings(_verify(data), CheckName.PROVENANCE)
+
+    assert any(finding.event_id == "missing-event" for finding in findings)
+
+
 def test_external_style_fixture_maps_without_invention() -> None:
     fixture = Path("tests/fixtures/external_style_workflow.json")
     workflow = parse_workflow(json.loads(fixture.read_text(encoding="utf-8")))
     report = verify_workflow(workflow, generated_at="fixed")
 
     assert workflow.assurance_context.events == ()
+    assert _check(report, CheckName.GOVERNANCE).status is CheckStatus.NOT_EVALUATED
+    assert _check(report, CheckName.HUMAN_REVIEW).status is CheckStatus.NOT_EVALUATED
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PASS
+    assert _check(report, CheckName.AUDIT).status is CheckStatus.PASS
+
+
+def test_external_graph_fixture_maps_without_invention() -> None:
+    fixture = Path("tests/fixtures/external_graph_workflow.json")
+    workflow = parse_workflow(json.loads(fixture.read_text(encoding="utf-8")))
+    report = verify_workflow(workflow, generated_at="fixed")
+
+    assert workflow.assurance_context.events == ()
+    assert any(event.parent_event_id is not None for event in workflow.events)
+    assert len(workflow.sources) == 2
+    assert {artifact.artifact_type for artifact in workflow.artifacts} == {
+        "research_plan",
+        "checkpoint",
+        "critique",
+        "final_report",
+    }
     assert _check(report, CheckName.GOVERNANCE).status is CheckStatus.NOT_EVALUATED
     assert _check(report, CheckName.HUMAN_REVIEW).status is CheckStatus.NOT_EVALUATED
     assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PASS
@@ -364,6 +626,7 @@ def test_repeated_run_is_semantically_deterministic() -> None:
         ((), "unexpected_workflow", "workflow"),
         (("events", 0), "approval_required", "workflow.events[0]"),
         (("evidence", 0), "source", "workflow.evidence[0]"),
+        (("evidence", 0), "source_ref", "workflow.evidence[0]"),
         (("claims", 0), "unexpected_claim", "workflow.claims[0]"),
         (
             ("assurance_context", "events", 0),
@@ -390,6 +653,17 @@ def test_empty_events_are_rejected() -> None:
 
     with pytest.raises(
         WorkflowValidationError, match=r"workflow\.events.*at least one event"
+    ):
+        parse_workflow(data)
+
+
+@pytest.mark.parametrize("field", ["sources", "artifacts"])
+def test_structural_collections_are_required(field: str) -> None:
+    data = _clean_workflow()
+    data.pop(field)
+
+    with pytest.raises(
+        WorkflowValidationError, match=rf"missing required field '{field}'"
     ):
         parse_workflow(data)
 

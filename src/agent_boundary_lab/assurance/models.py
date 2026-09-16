@@ -68,6 +68,7 @@ class ObservedEvent:
     """Facts observed in a workflow trace, without assurance judgments."""
 
     event_id: str
+    parent_event_id: str | None = None
     event_type: str | None = None
     action: str | None = None
     tool: str | None = None
@@ -90,10 +91,34 @@ class Evidence:
 
     evidence_id: str
     produced_by_event: str | None = None
-    source_ref: str | None = None
+    source_refs: tuple[str, ...] = ()
     parent_evidence_refs: tuple[str, ...] = ()
     supporting_text: str | None = None
     question_ref: str | None = None
+    metadata: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class SourceRecord:
+    """A source identity and bounded structured metadata."""
+
+    source_id: str
+    source_type: str | None = None
+    locator: str | None = None
+    title: str | None = None
+    metadata: dict[str, str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class WorkflowArtifact:
+    """A typed workflow artifact with identifier-level lineage."""
+
+    artifact_id: str
+    artifact_type: str
+    produced_by_event: str | None = None
+    parent_artifact_refs: tuple[str, ...] = ()
+    source_refs: tuple[str, ...] = ()
+    evidence_refs: tuple[str, ...] = ()
     metadata: dict[str, str] = field(default_factory=dict)
 
 
@@ -132,8 +157,10 @@ class Workflow:
 
     workflow_id: str
     events: tuple[ObservedEvent, ...]
+    sources: tuple[SourceRecord, ...]
     evidence: tuple[Evidence, ...]
     claims: tuple[Claim, ...]
+    artifacts: tuple[WorkflowArtifact, ...]
     title: str | None = None
     research_goal: str | None = None
     assurance_context: AssuranceContext = AssuranceContext()

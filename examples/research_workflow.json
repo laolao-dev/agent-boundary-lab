@@ -54,11 +54,22 @@
       "sequence": 5
     }
   ],
+  "sources": [
+    {
+      "source_id": "bounded_paper_index",
+      "source_type": "local_fixture",
+      "locator": "local-fixture:bounded-paper-index",
+      "title": "Bounded paper-index fixture",
+      "metadata": {
+        "content_scope": "synthetic metadata only"
+      }
+    }
+  ],
   "evidence": [
     {
       "evidence_id": "evidence_search_results",
       "produced_by_event": "search_papers",
-      "source_ref": "local-fixture:bounded-paper-index"
+      "source_refs": ["bounded_paper_index"]
     },
     {
       "evidence_id": "evidence_metadata",
@@ -81,6 +92,24 @@
       "claim_id": "claim_missing_evidence",
       "evidence_refs": [],
       "text": "The papers establish a broader conclusion not supported by recorded evidence."
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "synthesis_output",
+      "artifact_type": "intermediate_structured_output",
+      "produced_by_event": "synthesize_evidence",
+      "evidence_refs": ["evidence_synthesis"],
+      "metadata": {
+        "fixture_notice": "Synthetic identifier-level artifact only."
+      }
+    },
+    {
+      "artifact_id": "claim_set",
+      "artifact_type": "claim_collection",
+      "produced_by_event": "produce_claims",
+      "parent_artifact_refs": ["synthesis_output"],
+      "evidence_refs": ["evidence_synthesis"]
     }
   ],
   "assurance_context": {

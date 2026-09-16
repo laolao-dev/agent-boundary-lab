@@ -33,18 +33,35 @@
       "query": "synthetic comparison query"
     }
   ],
+  "sources": [
+    {
+      "source_id": "fixture_source_alpha",
+      "source_type": "synthetic_record",
+      "locator": "fixture-source:alpha",
+      "title": "Synthetic alpha record",
+      "metadata": {
+        "fixture_notice": "Synthetic structural fixture; not a copied third-party source."
+      }
+    },
+    {
+      "source_id": "fixture_source_beta",
+      "source_type": "synthetic_record",
+      "locator": "fixture-source:beta",
+      "title": "Synthetic beta record"
+    }
+  ],
   "evidence": [
     {
       "evidence_id": "evidence_001",
       "produced_by_event": "trace_event_001",
-      "source_ref": "fixture-source:alpha",
+      "source_refs": ["fixture_source_alpha"],
       "supporting_text": "Synthetic support for the first record.",
       "question_ref": "question_001"
     },
     {
       "evidence_id": "evidence_002",
       "produced_by_event": "trace_event_002",
-      "source_ref": "fixture-source:beta",
+      "source_refs": ["fixture_source_beta"],
       "parent_evidence_refs": ["evidence_001"],
       "supporting_text": "Synthetic support for the comparison.",
       "question_ref": "question_001"
@@ -57,5 +74,6 @@
       "evidence_refs": ["evidence_001", "evidence_002"],
       "question_ref": "question_001"
     }
-  ]
+  ],
+  "artifacts": []
 }

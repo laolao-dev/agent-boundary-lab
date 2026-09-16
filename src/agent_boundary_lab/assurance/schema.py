@@ -13,7 +13,9 @@ from agent_boundary_lab.assurance.models import (
     EventAssuranceContext,
     Evidence,
     ObservedEvent,
+    SourceRecord,
     Workflow,
+    WorkflowArtifact,
 )
 from agent_boundary_lab.models import BoundaryDecision
 
@@ -165,6 +167,7 @@ def _parse_event(value: object, path: str) -> ObservedEvent:
         frozenset(
             {
                 "event_id",
+                "parent_event_id",
                 "event_type",
                 "action",
                 "tool",
@@ -187,6 +190,7 @@ def _parse_event(value: object, path: str) -> ObservedEvent:
     assert event_id is not None
     return ObservedEvent(
         event_id=event_id,
+        parent_event_id=_optional_string(data, "parent_event_id", path),
         event_type=_optional_string(data, "event_type", path),
         action=_optional_string(data, "action", path),
         tool=_optional_string(data, "tool", path),
@@ -214,7 +218,7 @@ def _parse_evidence(value: object, path: str) -> Evidence:
             {
                 "evidence_id",
                 "produced_by_event",
-                "source_ref",
+                "source_refs",
                 "parent_evidence_refs",
                 "supporting_text",
                 "question_ref",
@@ -228,12 +232,67 @@ def _parse_evidence(value: object, path: str) -> Evidence:
     return Evidence(
         evidence_id=evidence_id,
         produced_by_event=_optional_string(data, "produced_by_event", path),
-        source_ref=_optional_string(data, "source_ref", path),
+        source_refs=_string_tuple(data.get("source_refs", []), f"{path}.source_refs"),
         parent_evidence_refs=_string_tuple(
             data.get("parent_evidence_refs", []), f"{path}.parent_evidence_refs"
         ),
         supporting_text=_optional_string(data, "supporting_text", path),
         question_ref=_optional_string(data, "question_ref", path),
+        metadata=_metadata(data.get("metadata", {}), f"{path}.metadata"),
+    )
+
+
+def _parse_source(value: object, path: str) -> SourceRecord:
+    data = _mapping(value, path)
+    _reject_unknown(
+        data,
+        frozenset({"source_id", "source_type", "locator", "title", "metadata"}),
+        path,
+    )
+    source_id = _string(_required(data, "source_id", path), f"{path}.source_id")
+    assert source_id is not None
+    return SourceRecord(
+        source_id=source_id,
+        source_type=_optional_string(data, "source_type", path),
+        locator=_optional_string(data, "locator", path),
+        title=_optional_string(data, "title", path),
+        metadata=_metadata(data.get("metadata", {}), f"{path}.metadata"),
+    )
+
+
+def _parse_artifact(value: object, path: str) -> WorkflowArtifact:
+    data = _mapping(value, path)
+    _reject_unknown(
+        data,
+        frozenset(
+            {
+                "artifact_id",
+                "artifact_type",
+                "produced_by_event",
+                "parent_artifact_refs",
+                "source_refs",
+                "evidence_refs",
+                "metadata",
+            }
+        ),
+        path,
+    )
+    artifact_id = _string(_required(data, "artifact_id", path), f"{path}.artifact_id")
+    artifact_type = _string(
+        _required(data, "artifact_type", path), f"{path}.artifact_type"
+    )
+    assert artifact_id is not None and artifact_type is not None
+    return WorkflowArtifact(
+        artifact_id=artifact_id,
+        artifact_type=artifact_type,
+        produced_by_event=_optional_string(data, "produced_by_event", path),
+        parent_artifact_refs=_string_tuple(
+            data.get("parent_artifact_refs", []), f"{path}.parent_artifact_refs"
+        ),
+        source_refs=_string_tuple(data.get("source_refs", []), f"{path}.source_refs"),
+        evidence_refs=_string_tuple(
+            data.get("evidence_refs", []), f"{path}.evidence_refs"
+        ),
         metadata=_metadata(data.get("metadata", {}), f"{path}.metadata"),
     )
 
@@ -312,6 +371,99 @@ def _require_unique(values: tuple[str, ...], path: str) -> None:
         _fail(path, f"duplicate identifiers: {', '.join(duplicates)}")
 
 
+def _reject_cycles(graph: dict[str, tuple[str, ...]], path: str, relation: str) -> None:
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(identifier: str) -> None:
+        if identifier in visiting:
+            _fail(path, f"{relation} graph contains a cycle at '{identifier}'")
+        if identifier in visited:
+            return
+        visiting.add(identifier)
+        for parent in graph[identifier]:
+            visit(parent)
+        visiting.remove(identifier)
+        visited.add(identifier)
+
+    for identifier in graph:
+        visit(identifier)
+
+
+def _validate_event_hierarchy(events: tuple[ObservedEvent, ...]) -> None:
+    event_ids = {event.event_id for event in events}
+    graph: dict[str, tuple[str, ...]] = {}
+    for index, event in enumerate(events):
+        parent = event.parent_event_id
+        path = f"workflow.events[{index}].parent_event_id"
+        if parent == event.event_id:
+            _fail(path, "event cannot reference itself as parent")
+        if parent is not None and parent not in event_ids:
+            _fail(path, f"unknown event_id '{parent}'")
+        graph[event.event_id] = () if parent is None else (parent,)
+    _reject_cycles(graph, "workflow.events", "parent_event_id")
+
+
+def _validate_source_references(
+    evidence: tuple[Evidence, ...], source_ids: set[str]
+) -> None:
+    for index, item in enumerate(evidence):
+        dangling = tuple(ref for ref in item.source_refs if ref not in source_ids)
+        if dangling:
+            _fail(
+                f"workflow.evidence[{index}].source_refs",
+                f"unknown source_id(s): {', '.join(dangling)}",
+            )
+
+
+def _validate_artifact_lineage(
+    artifacts: tuple[WorkflowArtifact, ...],
+    event_ids: set[str],
+    source_ids: set[str],
+    evidence_ids: set[str],
+) -> None:
+    artifact_ids = {artifact.artifact_id for artifact in artifacts}
+    graph: dict[str, tuple[str, ...]] = {}
+    for index, artifact in enumerate(artifacts):
+        base = f"workflow.artifacts[{index}]"
+        if artifact.produced_by_event not in event_ids | {None}:
+            _fail(
+                f"{base}.produced_by_event",
+                f"unknown event_id '{artifact.produced_by_event}'",
+            )
+        if artifact.artifact_id in artifact.parent_artifact_refs:
+            _fail(
+                f"{base}.parent_artifact_refs",
+                "artifact cannot reference itself as parent",
+            )
+        dangling_artifacts = tuple(
+            ref for ref in artifact.parent_artifact_refs if ref not in artifact_ids
+        )
+        if dangling_artifacts:
+            _fail(
+                f"{base}.parent_artifact_refs",
+                f"unknown artifact_id(s): {', '.join(dangling_artifacts)}",
+            )
+        dangling_sources = tuple(
+            ref for ref in artifact.source_refs if ref not in source_ids
+        )
+        if dangling_sources:
+            _fail(
+                f"{base}.source_refs",
+                f"unknown source_id(s): {', '.join(dangling_sources)}",
+            )
+        dangling_evidence = tuple(
+            ref for ref in artifact.evidence_refs if ref not in evidence_ids
+        )
+        if dangling_evidence:
+            _fail(
+                f"{base}.evidence_refs",
+                f"unknown evidence_id(s): {', '.join(dangling_evidence)}",
+            )
+        graph[artifact.artifact_id] = artifact.parent_artifact_refs
+    _reject_cycles(graph, "workflow.artifacts", "parent_artifact_refs")
+
+
 def parse_workflow(value: object) -> Workflow:
     """Parse an in-memory JSON value into a validated workflow model."""
     data = _mapping(value, "workflow")
@@ -323,8 +475,10 @@ def parse_workflow(value: object) -> Workflow:
                 "title",
                 "research_goal",
                 "events",
+                "sources",
                 "evidence",
                 "claims",
+                "artifacts",
                 "assurance_context",
             }
         ),
@@ -342,6 +496,12 @@ def parse_workflow(value: object) -> Workflow:
     )
     if not events:
         _fail("workflow.events", "expected at least one event")
+    sources = tuple(
+        _parse_source(item, f"workflow.sources[{index}]")
+        for index, item in enumerate(
+            _list(_required(data, "sources", "workflow"), "workflow.sources")
+        )
+    )
     evidence = tuple(
         _parse_evidence(item, f"workflow.evidence[{index}]")
         for index, item in enumerate(
@@ -354,19 +514,37 @@ def parse_workflow(value: object) -> Workflow:
             _list(_required(data, "claims", "workflow"), "workflow.claims")
         )
     )
+    artifacts = tuple(
+        _parse_artifact(item, f"workflow.artifacts[{index}]")
+        for index, item in enumerate(
+            _list(_required(data, "artifacts", "workflow"), "workflow.artifacts")
+        )
+    )
     assurance_context = _parse_assurance_context(
         data.get("assurance_context"), "workflow.assurance_context"
     )
     _require_unique(tuple(event.event_id for event in events), "workflow.events")
+    _require_unique(tuple(item.source_id for item in sources), "workflow.sources")
     _require_unique(tuple(item.evidence_id for item in evidence), "workflow.evidence")
     _require_unique(tuple(claim.claim_id for claim in claims), "workflow.claims")
+    _require_unique(
+        tuple(artifact.artifact_id for artifact in artifacts), "workflow.artifacts"
+    )
+    event_ids = {event.event_id for event in events}
+    source_ids = {source.source_id for source in sources}
+    evidence_ids = {item.evidence_id for item in evidence}
+    _validate_event_hierarchy(events)
+    _validate_source_references(evidence, source_ids)
+    _validate_artifact_lineage(artifacts, event_ids, source_ids, evidence_ids)
     return Workflow(
         workflow_id=workflow_id,
         title=_optional_string(data, "title", "workflow"),
         research_goal=_optional_string(data, "research_goal", "workflow"),
         events=events,
+        sources=sources,
         evidence=evidence,
         claims=claims,
+        artifacts=artifacts,
         assurance_context=assurance_context,
     )
 

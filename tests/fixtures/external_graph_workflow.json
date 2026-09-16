@@ -1,0 +1,152 @@
+{
+  "workflow_id": "synthetic_external_graph_fixture",
+  "title": "Synthetic graph-style research workflow",
+  "research_goal": "Exercise nested events and artifact lineage using synthetic records.",
+  "events": [
+    {
+      "event_id": "graph_run",
+      "event_type": "run",
+      "executed": true,
+      "observation": "Synthetic graph run completed.",
+      "sequence": 1,
+      "metadata": {
+        "fixture_notice": "Synthetic structural fixture; not a copied third-party trace."
+      }
+    },
+    {
+      "event_id": "plan_node",
+      "parent_event_id": "graph_run",
+      "event_type": "agent_node",
+      "action": "create plan",
+      "executed": true,
+      "observation": "A two-step synthetic plan was recorded.",
+      "sequence": 2
+    },
+    {
+      "event_id": "memory_tool",
+      "parent_event_id": "plan_node",
+      "event_type": "tool_call",
+      "tool": "local_memory",
+      "executed": true,
+      "observation": "No prior synthetic memory was found.",
+      "sequence": 3
+    },
+    {
+      "event_id": "retrieval_node",
+      "parent_event_id": "graph_run",
+      "event_type": "agent_node",
+      "action": "retrieve records",
+      "control_flow_decision": "rewrite",
+      "executed": true,
+      "evidence_refs": ["graph_evidence"],
+      "observation": "Two synthetic sources were retained.",
+      "sequence": 4,
+      "query": "synthetic graph query"
+    },
+    {
+      "event_id": "search_tool",
+      "parent_event_id": "retrieval_node",
+      "event_type": "tool_call",
+      "tool": "local_search",
+      "executed": true,
+      "evidence_refs": ["graph_evidence"],
+      "observation": "Two bounded synthetic records returned.",
+      "sequence": 5
+    },
+    {
+      "event_id": "critique_node",
+      "parent_event_id": "graph_run",
+      "event_type": "agent_node",
+      "action": "critique evidence",
+      "executed": true,
+      "evidence_refs": ["graph_evidence"],
+      "observation": "Synthetic coverage limitation recorded.",
+      "sequence": 6
+    },
+    {
+      "event_id": "report_node",
+      "parent_event_id": "graph_run",
+      "event_type": "agent_node",
+      "action": "produce report",
+      "executed": true,
+      "evidence_refs": ["graph_evidence"],
+      "observation": "Synthetic report identity recorded.",
+      "sequence": 7
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "graph_source_alpha",
+      "source_type": "local_fixture",
+      "locator": "local:graph-alpha",
+      "title": "Synthetic graph source alpha",
+      "metadata": {
+        "content_hash": "synthetic-alpha-hash",
+        "provider": "local-fixture"
+      }
+    },
+    {
+      "source_id": "graph_source_beta",
+      "source_type": "local_fixture",
+      "locator": "local:graph-beta",
+      "title": "Synthetic graph source beta",
+      "metadata": {
+        "content_hash": "synthetic-beta-hash",
+        "provider": "local-fixture"
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "graph_evidence",
+      "produced_by_event": "search_tool",
+      "source_refs": ["graph_source_alpha", "graph_source_beta"],
+      "supporting_text": "Synthetic support assembled from two bounded fixture records."
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "graph_claim",
+      "text": "The synthetic fixture exercises graph-shaped workflow structure.",
+      "evidence_refs": ["graph_evidence"]
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_id": "graph_plan",
+      "artifact_type": "research_plan",
+      "produced_by_event": "plan_node",
+      "metadata": {
+        "task_count": "2"
+      }
+    },
+    {
+      "artifact_id": "graph_checkpoint",
+      "artifact_type": "checkpoint",
+      "produced_by_event": "retrieval_node",
+      "parent_artifact_refs": ["graph_plan"],
+      "evidence_refs": ["graph_evidence"]
+    },
+    {
+      "artifact_id": "graph_critique",
+      "artifact_type": "critique",
+      "produced_by_event": "critique_node",
+      "parent_artifact_refs": ["graph_checkpoint"],
+      "evidence_refs": ["graph_evidence"],
+      "metadata": {
+        "result": "synthetic limitation recorded"
+      }
+    },
+    {
+      "artifact_id": "graph_report",
+      "artifact_type": "final_report",
+      "produced_by_event": "report_node",
+      "parent_artifact_refs": ["graph_critique"],
+      "source_refs": ["graph_source_alpha", "graph_source_beta"],
+      "evidence_refs": ["graph_evidence"],
+      "metadata": {
+        "content_storage": "not embedded"
+      }
+    }
+  ]
+}

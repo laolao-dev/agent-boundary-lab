@@ -105,6 +105,8 @@ def _provenance_assessment(workflow: Workflow) -> CheckAssessment:
     specs: list[FindingSpec] = []
     evidence_ids = {item.evidence_id for item in workflow.evidence}
     event_ids = {event.event_id for event in workflow.events}
+    source_ids = {source.source_id for source in workflow.sources}
+    artifact_ids = {artifact.artifact_id for artifact in workflow.artifacts}
 
     for event in workflow.events:
         dangling = tuple(ref for ref in event.evidence_refs if ref not in evidence_ids)
@@ -146,13 +148,27 @@ def _provenance_assessment(workflow: Workflow) -> CheckAssessment:
             )
 
     for item in workflow.evidence:
-        if item.source_ref is None and not item.parent_evidence_refs:
+        if not item.source_refs and not item.parent_evidence_refs:
             specs.append(
                 (
                     Severity.MEDIUM,
-                    "Evidence has neither a source reference nor parent evidence.",
+                    "Evidence has neither source references nor parent evidence.",
                     (item.evidence_id,),
-                    "Record a source_ref or one or more parent_evidence_refs.",
+                    "Record source_refs or one or more parent_evidence_refs.",
+                    None,
+                    None,
+                )
+            )
+        dangling_sources = tuple(
+            ref for ref in item.source_refs if ref not in source_ids
+        )
+        if dangling_sources:
+            specs.append(
+                (
+                    Severity.MEDIUM,
+                    "Evidence references source records that do not exist.",
+                    (item.evidence_id,),
+                    "Create the source records or remove the dangling references.",
                     None,
                     None,
                 )
@@ -186,6 +202,96 @@ def _provenance_assessment(workflow: Workflow) -> CheckAssessment:
                 )
             )
 
+    referenced_source_ids = {
+        ref for item in workflow.evidence for ref in item.source_refs
+    } | {ref for artifact in workflow.artifacts for ref in artifact.source_refs}
+    for source in workflow.sources:
+        if source.source_id not in referenced_source_ids:
+            specs.append(
+                (
+                    Severity.MEDIUM,
+                    f"Source record '{source.source_id}' is not linked to evidence or an artifact.",
+                    (),
+                    "Reference the source from evidence or a workflow artifact.",
+                    None,
+                    None,
+                )
+            )
+
+    for artifact in workflow.artifacts:
+        if (
+            artifact.produced_by_event is None
+            and not artifact.parent_artifact_refs
+            and not artifact.source_refs
+            and not artifact.evidence_refs
+        ):
+            specs.append(
+                (
+                    Severity.MEDIUM,
+                    f"Artifact '{artifact.artifact_id}' has no recorded lineage.",
+                    (),
+                    "Link the artifact to a producing event or parent, source, or evidence records.",
+                    None,
+                    None,
+                )
+            )
+        if (
+            artifact.produced_by_event is not None
+            and artifact.produced_by_event not in event_ids
+        ):
+            specs.append(
+                (
+                    Severity.MEDIUM,
+                    f"Artifact '{artifact.artifact_id}' references a producing event that does not exist.",
+                    artifact.evidence_refs,
+                    "Link the artifact to an existing observed event.",
+                    artifact.produced_by_event,
+                    None,
+                )
+            )
+        dangling_artifacts = tuple(
+            ref for ref in artifact.parent_artifact_refs if ref not in artifact_ids
+        )
+        if dangling_artifacts:
+            specs.append(
+                (
+                    Severity.MEDIUM,
+                    f"Artifact '{artifact.artifact_id}' references parent artifacts that do not exist.",
+                    artifact.evidence_refs,
+                    "Create the parent artifacts or remove the dangling references.",
+                    None,
+                    None,
+                )
+            )
+        dangling_sources = tuple(
+            ref for ref in artifact.source_refs if ref not in source_ids
+        )
+        if dangling_sources:
+            specs.append(
+                (
+                    Severity.MEDIUM,
+                    f"Artifact '{artifact.artifact_id}' references source records that do not exist.",
+                    artifact.evidence_refs,
+                    "Create the source records or remove the dangling references.",
+                    None,
+                    None,
+                )
+            )
+        dangling_evidence = tuple(
+            ref for ref in artifact.evidence_refs if ref not in evidence_ids
+        )
+        if dangling_evidence:
+            specs.append(
+                (
+                    Severity.MEDIUM,
+                    f"Artifact '{artifact.artifact_id}' references evidence that does not exist.",
+                    dangling_evidence,
+                    "Create the evidence records or remove the dangling references.",
+                    None,
+                    None,
+                )
+            )
+
     for context in workflow.assurance_context.events:
         refs = context.governance_evidence_refs
         if context.approval_record is not None:
@@ -204,8 +310,10 @@ def _provenance_assessment(workflow: Workflow) -> CheckAssessment:
             )
 
     evaluated = (
-        len(workflow.evidence)
+        len(workflow.sources)
+        + len(workflow.evidence)
         + len(workflow.claims)
+        + len(workflow.artifacts)
         + sum(1 for event in workflow.events if event.evidence_refs)
         + sum(
             1
