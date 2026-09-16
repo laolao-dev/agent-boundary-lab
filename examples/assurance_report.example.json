@@ -1,0 +1,70 @@
+{
+  "checks": [
+    {
+      "check": "GOVERNANCE",
+      "finding_ids": [
+        "GOVERNANCE-001"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "check": "PROVENANCE",
+      "finding_ids": [
+        "PROVENANCE-001"
+      ],
+      "status": "PARTIAL"
+    },
+    {
+      "check": "HUMAN_REVIEW",
+      "finding_ids": [
+        "HUMAN_REVIEW-001"
+      ],
+      "status": "FAIL"
+    },
+    {
+      "check": "AUDIT",
+      "finding_ids": [],
+      "status": "PASS"
+    }
+  ],
+  "findings": [
+    {
+      "check": "GOVERNANCE",
+      "claim_id": null,
+      "event_id": "attempt_external_send",
+      "evidence_refs": [],
+      "finding_id": "GOVERNANCE-001",
+      "message": "Approval-gated event was executed without an APPROVED record.",
+      "remediation_hint": "Record approved review evidence before executing the event.",
+      "severity": "HIGH"
+    },
+    {
+      "check": "PROVENANCE",
+      "claim_id": "claim_missing_evidence",
+      "event_id": null,
+      "evidence_refs": [],
+      "finding_id": "PROVENANCE-001",
+      "message": "Claim does not reference any evidence.",
+      "remediation_hint": "Add at least one existing evidence identifier to the claim.",
+      "severity": "MEDIUM"
+    },
+    {
+      "check": "HUMAN_REVIEW",
+      "claim_id": null,
+      "event_id": "attempt_external_send",
+      "evidence_refs": [],
+      "finding_id": "HUMAN_REVIEW-001",
+      "message": "Approval-required event has no structured approval record.",
+      "remediation_hint": "Attach a structured approval record; identity is not authenticated.",
+      "severity": "HIGH"
+    }
+  ],
+  "summary": {
+    "high_findings": 2,
+    "low_findings": 0,
+    "medium_findings": 1,
+    "overall_status": "INCOMPLETE",
+    "total_findings": 3
+  },
+  "workflow_id": "literature_review_v02_preview"
+}

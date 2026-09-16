@@ -4,148 +4,105 @@
 
 > “We verify why a multi-step research-agent workflow should be trusted.”
 
-Agent Boundary Lab (ABL) is an alpha research prototype for making trust claims
-about a multi-step research-agent workflow inspectable. It connects governance,
-provenance, human-review evidence, audit completeness, reproducibility, and
-adversarial boundary testing without claiming that the full target product is
-already implemented.
+Research agents can search many sources without leaving a verifiable record of
+which evidence actually supports their final output. Agent Boundary Lab (ABL)
+audits the **recorded workflow evidence**: it checks governance decisions,
+source/evidence lineage, human-review records, and audit completeness, then
+writes a JSON Assurance Report with findings. This is an alpha research prototype.
 
 ```text
-Research-agent workflow
-    ↓
-Governance verification
-    ↓
-Provenance / evidence lineage
-    ↓
-Human review / approval evidence
-    ↓
-Audit completeness
-    ↓
-Adversarial boundary testing
-    ↓
-Assurance Report + Evidence Bundle
+Research Agent Workflow
+        ↓
+ABL Verify
+        ↓
+Governance · Provenance · Human Review · Audit Completeness
+        ↓
+Assurance Report
 ```
 
-Public alpha: `0.1.0-alpha` (Python package version `0.1.0a1`).
+Current development package version: `0.2.0a1` (planned public release name:
+`v0.2.0-alpha`). The existing `v0.1.0-alpha` release and its benchmark evidence
+remain historical.
 
-## Product boundary
+## Quick start: verify a recorded workflow
 
-ABL's core object is the whole multi-step research-agent workflow, represented
-by a workflow, trace, adapter, and evidence. The target outputs are an Assurance
-Report, an Evidence Bundle, findings, and regression scenarios.
-
-The current `ALLOW` / `DENY` / `REQUIRE_APPROVAL` logic is a governance detector,
-not the whole product. Audit records are trace evidence; provenance records are
-evidence-lineage components; approval records are evidence about a modeled
-human-review point; and Attack Search is an adversarial-assurance experiment.
-The MCPGuard-Dynamic benchmark is technical validation evidence produced by the
-ABL project, not a product certification.
-
-ABL is not presented as a generic MCP gateway, generic policy engine, agent
-firewall, enterprise security platform, generic observability tool, or generic
-citation checker.
-
-## Currently implemented
-
-- A deterministic boundary/governance harness with explicit `ALLOW`, `DENY`, and
-  `REQUIRE_APPROVAL` decisions and pre-dispatch enforcement.
-- Structured audit and identifier-level provenance components.
-- A synthetic multi-step research workflow with a fixed approval fixture.
-- A bounded, seeded Attack Search experiment and a preserved regression case.
-- A replay-first OpenAlex research-data anchor with optional live metadata access.
-- A frozen MCPGuard-Dynamic evaluation and public sanitized evidence copies.
-
-## Target product direction
-
-- Full workflow-level assurance across research-agent traces and adapters.
-- A reviewable Assurance Report.
-- A reproducible Evidence Bundle.
-- Research-specific governance, provenance, review, audit, and adversarial
-  verification.
-
-These are product directions, not completed v0.1 capabilities. The repository
-does not yet provide a complete end-to-end verifier, production workflow support,
-an authenticated human-approval system, broad research-agent integrations, or
-evidence of design partners or users.
-
-## Quick start
-
-Python 3.12 and [uv](https://docs.astral.sh/uv/) are required.
+Python 3.12 and [uv](https://docs.astral.sh/uv/) are required. From the
+repository root:
 
 ```console
 uv sync --locked
-uv run pytest
-uv run python -m agent_boundary_lab.research_data_demo
-```
-
-The default demo is fully local: it requires no API key, starts no MCP server,
-and makes no network request. It replays a small checked-in scholarly-metadata
-fixture and writes deterministic evidence to
-`artifacts/openalex_mcp_evidence.json`.
-
-## v0.2 workflow assurance development preview
-
-The alpha v0.2 vertical slice adds deterministic, workflow-level checks for
-governance, evidence lineage, structured human-review records, and observed-event
-audit completeness. Its minimal schema keeps observed workflow facts separate
-from optional assurance context: a trace can record events, evidence, claims,
-control-flow decisions, and outcomes without inventing an ABL governance or
-approval decision.
-
-Approval requirements in assurance context are explicitly `REQUIRED`,
-`NOT_REQUIRED`, or `UNKNOWN`. Missing governance or approval context produces a
-`NOT_EVALUATED` check, never a fabricated pass or failure, and any
-`NOT_EVALUATED` check keeps the overall report `INCOMPLETE`.
-
-Observed workflow structure now has three bounded additions derived from two
-external schema-fit studies:
-
-- `ObservedEvent.parent_event_id` represents optional execution hierarchy. The
-  parser rejects missing parents, self-parenting, and cycles, but does not infer
-  timing or causality.
-- First-class `SourceRecord` objects retain a source ID, optional type, locator,
-  title, and bounded string metadata. `Evidence.source_refs` can reference more
-  than one source while `parent_evidence_refs` remains separate evidence
-  lineage.
-- Generic `WorkflowArtifact` objects represent identities and lineage for plans,
-  checkpoints, critiques, reports, and intermediate outputs. They do not embed
-  report bodies or create storage, truth verification, or a workflow engine.
-
-Artifacts also have a narrow `artifact_role`: `FINAL_OUTPUT`, `INTERMEDIATE`, or
-`UNKNOWN` (the default when omitted). Claims and `FINAL_OUTPUT` artifacts are
-provenance subjects. A provenance subject is grounded only when its recorded
-evidence or artifact lineage reaches at least one source record. An artifact's
-`produced_by_event` records execution origin but does not establish research
-grounding. `UNKNOWN` is not treated as `INTERMEDIATE` or as a final output.
-
-Source, evidence, claim, event, artifact, and assurance-evidence references are
-checked deterministically. Insufficient provenance linkage produces a partial or
-not-evaluated result rather than a fabricated pass. Claims retain
-identifier-level evidence links, but ABL does not validate whether claim or
-source content is true.
-
-This is a breaking development-preview schema change: workflow JSON now supplies
-`sources` and `artifacts` arrays, and Evidence uses `source_refs` instead of the
-old singular `source_ref`. No compatibility importer is included.
-
-The checked-in `tests/fixtures/external_style_workflow.json` and
-`tests/fixtures/external_graph_workflow.json` files are sanitized, manually
-authored synthetic structural fixtures. They reflect only schema characteristics
-observed in the first and second external fit studies respectively; they are not
-copied third-party traces, do not contain third-party code or report content, and
-are not safety conclusions about either external project. No production adapter
-or importer is included.
-
-Run the intentionally incomplete local example with no external API calls:
-
-```console
 uv run abl verify examples/research_workflow.json
 ```
 
-The command writes `artifacts/assurance_report.json`. Exit code `0` means every
-current check passed. Exit code `1` means the report is `INCOMPLETE`, including
-when a check is `PARTIAL`, `FAIL`, or `NOT_EVALUATED`. Exit code `2` means the
-workflow input could not be validated.
+This local synthetic example intentionally contains an executed approval-gated
+event without an approved record and a claim without evidence. **Exit code 1
+means `INCOMPLETE` by design; the CLI has generated a report, not crashed.** The
+command writes `artifacts/assurance_report.json` (override with `--output`). The
+CLI prints the workflow ID, overall status, finding count, and report path.
+
+The following check statuses come from the verifier's report for this example:
+
+```text
+GOVERNANCE      FAIL
+PROVENANCE      PARTIAL
+HUMAN_REVIEW    FAIL
+AUDIT           PASS
+OVERALL         INCOMPLETE
+FINDINGS        3
+```
+
+Read the [sanitized example report](examples/assurance_report.example.json) for
+the three findings. The live report also contains `generated_at`; the checked-in
+example omits that changing timestamp. See the [CLI guide](docs/cli.md),
+[workflow schema](docs/workflow-schema.md), and
+[assurance semantics](docs/assurance-semantics.md). The example is fully offline;
+it needs no API key, MCP server, or live research-agent integration.
+
+## What v0.2 implements
+
+- A deterministic parser for workflow JSON. Observed workflow facts are separate
+  from optional assurance context; missing context stays unknown rather than
+  becoming an invented `false` or policy decision.
+- Four workflow checks: governance, source/evidence provenance, structured
+  human-review evidence, and observed-event audit completeness.
+- Claims and explicitly marked `FINAL_OUTPUT` artifacts as provenance subjects.
+  Recorded lineage must reach a `SourceRecord` for current grounding.
+- Per-check `PASS`, `PARTIAL`, `FAIL`, or `NOT_EVALUATED`; overall `COMPLETE` only
+  when all four checks pass, otherwise `INCOMPLETE`.
+- Stable finding IDs, severity, references, and remediation hints in a JSON
+  Assurance Report; an `abl verify` CLI with explicit exit codes.
+
+The input schema has `Workflow`, `ObservedEvent`, `SourceRecord`, `Evidence`,
+`Claim`, `WorkflowArtifact`, and optional `AssuranceContext` records. Evidence
+uses plural `source_refs`; events can record optional parent hierarchy; artifacts
+have `FINAL_OUTPUT`, `INTERMEDIATE`, or `UNKNOWN` roles. This is a breaking
+**development-preview** schema change from earlier v0.2 work; there is no
+compatibility importer. The example and guide show the current format.
+
+## Product boundary and limitations
+
+ABL checks recorded identifiers and decisions for modeled workflows. A
+source-grounded claim or output has a recorded path to a source; that does not
+establish source truth, factual correctness, or citation entailment. ABL does not
+infer causality from event hierarchy, authenticate a human approval, or make its
+audit evidence tamper-proof. It has no universal research-agent adapter,
+automatic LangGraph support, or production security/compliance certification.
+Its checked-in external-style fixtures are manually authored synthetic
+structures, not redistributed third-party traces or production adapters.
+
+The `ALLOW` / `DENY` / `REQUIRE_APPROVAL` boundary harness is an earlier
+pre-dispatch governance layer, not the entire v0.2 product. Attack Search and the
+frozen MCPGuard-Dynamic evaluation assess bounded v0.1 behavior; they do not
+validate the whole workflow verifier or imply third-party endorsement.
+
+## Other implemented components and future direction
+
+The repository also includes the deterministic boundary harness, a synthetic
+research workflow with a fixed approval fixture, bounded seeded Attack Search,
+an offline-first OpenAlex metadata replay with optional live access, and public
+sanitized v0.1 MCPGuard evidence. A broader reproducible Evidence Bundle,
+production workflow adapters, authenticated review, and content-level
+verification remain future work. No design-partner or user validation is claimed.
 
 ## Architecture in v0.1
 
@@ -196,7 +153,7 @@ certified, or endorsed the evaluation.
 
 ## Current limitations
 
-- v0.1 is an alpha research prototype, not production security enforcement, an
+- v0.2 remains an alpha research prototype, not production security enforcement, an
   operating-system sandbox, or proof of compliance.
 - It models actions in process; it does not run a real AI agent or intercept
   arbitrary filesystem and network operations.
