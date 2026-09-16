@@ -98,6 +98,7 @@
     {
       "artifact_id": "synthesis_output",
       "artifact_type": "intermediate_structured_output",
+      "artifact_role": "INTERMEDIATE",
       "produced_by_event": "synthesize_evidence",
       "evidence_refs": ["evidence_synthesis"],
       "metadata": {
@@ -107,6 +108,7 @@
     {
       "artifact_id": "claim_set",
       "artifact_type": "claim_collection",
+      "artifact_role": "UNKNOWN",
       "produced_by_event": "produce_claims",
       "parent_artifact_refs": ["synthesis_output"],
       "evidence_refs": ["evidence_synthesis"]

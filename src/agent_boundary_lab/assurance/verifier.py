@@ -6,6 +6,7 @@ from datetime import UTC, datetime
 from agent_boundary_lab.assurance.models import (
     ApprovalDecision,
     ApprovalRequirement,
+    ArtifactRole,
     AssuranceReport,
     CheckName,
     CheckResult,
@@ -103,10 +104,46 @@ def _governance_assessment(workflow: Workflow) -> CheckAssessment:
 
 def _provenance_assessment(workflow: Workflow) -> CheckAssessment:
     specs: list[FindingSpec] = []
+    evidence_by_id = {item.evidence_id: item for item in workflow.evidence}
+    artifact_by_id = {artifact.artifact_id: artifact for artifact in workflow.artifacts}
     evidence_ids = {item.evidence_id for item in workflow.evidence}
     event_ids = {event.event_id for event in workflow.events}
     source_ids = {source.source_id for source in workflow.sources}
     artifact_ids = {artifact.artifact_id for artifact in workflow.artifacts}
+
+    def evidence_reaches_source(
+        evidence_id: str, visiting: frozenset[str] = frozenset()
+    ) -> bool:
+        if evidence_id in visiting:
+            return False
+        item = evidence_by_id.get(evidence_id)
+        if item is None:
+            return False
+        if any(source_ref in source_ids for source_ref in item.source_refs):
+            return True
+        next_visiting = visiting | {evidence_id}
+        return any(
+            evidence_reaches_source(parent_ref, next_visiting)
+            for parent_ref in item.parent_evidence_refs
+        )
+
+    def artifact_reaches_source(
+        artifact_id: str, visiting: frozenset[str] = frozenset()
+    ) -> bool:
+        if artifact_id in visiting:
+            return False
+        artifact = artifact_by_id.get(artifact_id)
+        if artifact is None:
+            return False
+        if any(source_ref in source_ids for source_ref in artifact.source_refs):
+            return True
+        if any(evidence_reaches_source(ref) for ref in artifact.evidence_refs):
+            return True
+        next_visiting = visiting | {artifact_id}
+        return any(
+            artifact_reaches_source(parent_ref, next_visiting)
+            for parent_ref in artifact.parent_artifact_refs
+        )
 
     for event in workflow.events:
         dangling = tuple(ref for ref in event.evidence_refs if ref not in evidence_ids)
@@ -142,6 +179,19 @@ def _provenance_assessment(workflow: Workflow) -> CheckAssessment:
                     "Claim references evidence that does not exist.",
                     dangling,
                     "Create the evidence records or remove the dangling references.",
+                    None,
+                    claim.claim_id,
+                )
+            )
+        if claim.evidence_refs and not any(
+            evidence_reaches_source(ref) for ref in claim.evidence_refs
+        ):
+            specs.append(
+                (
+                    Severity.MEDIUM,
+                    "PROV_CLAIM_UNGROUNDED: Claim evidence has no recorded path to a source.",
+                    claim.evidence_refs,
+                    "Link claim evidence through source_refs or parent evidence to a source record.",
                     None,
                     claim.claim_id,
                 )
@@ -291,6 +341,20 @@ def _provenance_assessment(workflow: Workflow) -> CheckAssessment:
                     None,
                 )
             )
+        if (
+            artifact.artifact_role is ArtifactRole.FINAL_OUTPUT
+            and not artifact_reaches_source(artifact.artifact_id)
+        ):
+            specs.append(
+                (
+                    Severity.MEDIUM,
+                    "PROV_FINAL_OUTPUT_UNGROUNDED: Final output has no recorded path to a source.",
+                    artifact.evidence_refs,
+                    "Link the final output directly or through evidence or parent artifacts to a source record.",
+                    artifact.produced_by_event,
+                    None,
+                )
+            )
 
     for context in workflow.assurance_context.events:
         refs = context.governance_evidence_refs
@@ -309,25 +373,13 @@ def _provenance_assessment(workflow: Workflow) -> CheckAssessment:
                 )
             )
 
-    evaluated = (
-        len(workflow.sources)
-        + len(workflow.evidence)
-        + len(workflow.claims)
-        + len(workflow.artifacts)
-        + sum(1 for event in workflow.events if event.evidence_refs)
-        + sum(
-            1
-            for context in workflow.assurance_context.events
-            if context.governance_evidence_refs
-        )
-        + sum(
-            1
-            for context in workflow.assurance_context.events
-            if context.approval_record is not None
-            and context.approval_record.evidence_refs
-        )
+    provenance_subjects = len(workflow.claims) + sum(
+        artifact.artifact_role is ArtifactRole.FINAL_OUTPUT
+        for artifact in workflow.artifacts
     )
-    return CheckAssessment(tuple(specs), evaluated, int(evaluated == 0))
+    return CheckAssessment(
+        tuple(specs), provenance_subjects, int(provenance_subjects == 0)
+    )
 
 
 def _human_review_assessment(workflow: Workflow) -> CheckAssessment:

@@ -115,6 +115,7 @@
     {
       "artifact_id": "graph_plan",
       "artifact_type": "research_plan",
+      "artifact_role": "INTERMEDIATE",
       "produced_by_event": "plan_node",
       "metadata": {
         "task_count": "2"
@@ -123,6 +124,7 @@
     {
       "artifact_id": "graph_checkpoint",
       "artifact_type": "checkpoint",
+      "artifact_role": "INTERMEDIATE",
       "produced_by_event": "retrieval_node",
       "parent_artifact_refs": ["graph_plan"],
       "evidence_refs": ["graph_evidence"]
@@ -130,6 +132,7 @@
     {
       "artifact_id": "graph_critique",
       "artifact_type": "critique",
+      "artifact_role": "INTERMEDIATE",
       "produced_by_event": "critique_node",
       "parent_artifact_refs": ["graph_checkpoint"],
       "evidence_refs": ["graph_evidence"],
@@ -140,6 +143,7 @@
     {
       "artifact_id": "graph_report",
       "artifact_type": "final_report",
+      "artifact_role": "FINAL_OUTPUT",
       "produced_by_event": "report_node",
       "parent_artifact_refs": ["graph_critique"],
       "source_refs": ["graph_source_alpha", "graph_source_beta"],

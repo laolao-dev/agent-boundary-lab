@@ -54,6 +54,14 @@ class ApprovalRequirement(str, Enum):
     UNKNOWN = "UNKNOWN"
 
 
+class ArtifactRole(str, Enum):
+    """Whether an artifact is a final provenance subject."""
+
+    FINAL_OUTPUT = "FINAL_OUTPUT"
+    INTERMEDIATE = "INTERMEDIATE"
+    UNKNOWN = "UNKNOWN"
+
+
 @dataclass(frozen=True)
 class ApprovalRecord:
     """Structured approval evidence; it does not authenticate a person."""
@@ -115,6 +123,7 @@ class WorkflowArtifact:
 
     artifact_id: str
     artifact_type: str
+    artifact_role: ArtifactRole = ArtifactRole.UNKNOWN
     produced_by_event: str | None = None
     parent_artifact_refs: tuple[str, ...] = ()
     source_refs: tuple[str, ...] = ()

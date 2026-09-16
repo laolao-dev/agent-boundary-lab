@@ -8,6 +8,7 @@ from agent_boundary_lab.assurance.models import (
     ApprovalDecision,
     ApprovalRecord,
     ApprovalRequirement,
+    ArtifactRole,
     AssuranceContext,
     Claim,
     EventAssuranceContext,
@@ -135,6 +136,16 @@ def _parse_approval_requirement(value: object, path: str) -> ApprovalRequirement
         return ApprovalRequirement(parsed)
     except ValueError:
         allowed = ", ".join(item.value for item in ApprovalRequirement)
+        _fail(path, f"expected one of: {allowed}, or null")
+
+
+def _parse_artifact_role(value: object, path: str) -> ArtifactRole:
+    parsed = _string(value, path)
+    assert parsed is not None
+    try:
+        return ArtifactRole(parsed)
+    except ValueError:
+        allowed = ", ".join(item.value for item in ArtifactRole)
         _fail(path, f"expected one of: {allowed}, or null")
 
 
@@ -268,6 +279,7 @@ def _parse_artifact(value: object, path: str) -> WorkflowArtifact:
             {
                 "artifact_id",
                 "artifact_type",
+                "artifact_role",
                 "produced_by_event",
                 "parent_artifact_refs",
                 "source_refs",
@@ -285,6 +297,10 @@ def _parse_artifact(value: object, path: str) -> WorkflowArtifact:
     return WorkflowArtifact(
         artifact_id=artifact_id,
         artifact_type=artifact_type,
+        artifact_role=_parse_artifact_role(
+            data.get("artifact_role", ArtifactRole.UNKNOWN.value),
+            f"{path}.artifact_role",
+        ),
         produced_by_event=_optional_string(data, "produced_by_event", path),
         parent_artifact_refs=_string_tuple(
             data.get("parent_artifact_refs", []), f"{path}.parent_artifact_refs"

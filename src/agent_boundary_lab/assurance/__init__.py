@@ -3,6 +3,7 @@
 from agent_boundary_lab.assurance.models import (
     ApprovalRecord,
     ApprovalRequirement,
+    ArtifactRole,
     AssuranceContext,
     AssuranceReport,
     CheckName,
@@ -24,6 +25,7 @@ from agent_boundary_lab.assurance.verifier import verify_workflow
 __all__ = [
     "ApprovalRecord",
     "ApprovalRequirement",
+    "ArtifactRole",
     "AssuranceContext",
     "AssuranceReport",
     "CheckName",

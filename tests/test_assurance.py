@@ -7,6 +7,7 @@ import pytest
 
 from agent_boundary_lab.assurance.models import (
     ApprovalRequirement,
+    ArtifactRole,
     CheckName,
     CheckStatus,
     OverallStatus,
@@ -322,7 +323,51 @@ def test_generic_plan_artifact_parses() -> None:
     workflow = parse_workflow(data)
 
     assert workflow.artifacts[0].artifact_type == "research_plan"
+    assert workflow.artifacts[0].artifact_role is ArtifactRole.UNKNOWN
     assert workflow.artifacts[0].source_refs == ("local-index",)
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("FINAL_OUTPUT", ArtifactRole.FINAL_OUTPUT),
+        ("INTERMEDIATE", ArtifactRole.INTERMEDIATE),
+        ("UNKNOWN", ArtifactRole.UNKNOWN),
+        (None, ArtifactRole.UNKNOWN),
+    ],
+)
+def test_artifact_role_parses_with_unknown_default(
+    value: str | None, expected: ArtifactRole
+) -> None:
+    data = _clean_workflow()
+    artifact = {
+        "artifact_id": "artifact-1",
+        "artifact_type": "report",
+        "source_refs": ["local-index"],
+    }
+    if value is not None:
+        artifact["artifact_role"] = value
+    data["artifacts"] = [artifact]
+
+    workflow = parse_workflow(data)
+
+    assert workflow.artifacts[0].artifact_role is expected
+
+
+def test_invalid_artifact_role_is_rejected() -> None:
+    data = _clean_workflow()
+    data["artifacts"] = [
+        {
+            "artifact_id": "artifact-1",
+            "artifact_type": "report",
+            "artifact_role": "REPORT",
+        }
+    ]
+
+    with pytest.raises(
+        WorkflowValidationError, match="FINAL_OUTPUT, INTERMEDIATE, UNKNOWN"
+    ):
+        parse_workflow(data)
 
 
 def test_checkpoint_parent_artifact_lineage_parses() -> None:
@@ -487,6 +532,7 @@ def test_external_graph_fixture_maps_without_invention() -> None:
         "critique",
         "final_report",
     }
+    assert workflow.artifacts[-1].artifact_role is ArtifactRole.FINAL_OUTPUT
     assert _check(report, CheckName.GOVERNANCE).status is CheckStatus.NOT_EVALUATED
     assert _check(report, CheckName.HUMAN_REVIEW).status is CheckStatus.NOT_EVALUATED
     assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PASS
@@ -590,14 +636,180 @@ def test_empty_provenance_surface_is_not_evaluated_or_complete() -> None:
     assert report.summary.overall_status is OverallStatus.INCOMPLETE
 
 
-def test_valid_evidence_lineage_without_claims_can_pass_provenance() -> None:
+def test_valid_evidence_lineage_without_subjects_is_not_evaluated() -> None:
     data = _clean_workflow()
     data["claims"] = []
 
     report = _verify(data)
 
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.NOT_EVALUATED
+    assert report.summary.overall_status is OverallStatus.INCOMPLETE
+
+
+def test_final_output_produced_by_event_only_is_partial_provenance() -> None:
+    data = _clean_workflow()
+    data["claims"] = []
+    data["artifacts"] = [
+        {
+            "artifact_id": "final-1",
+            "artifact_type": "report",
+            "artifact_role": "FINAL_OUTPUT",
+            "produced_by_event": "send",
+        }
+    ]
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PARTIAL
+    assert any(
+        finding.message.startswith("PROV_FINAL_OUTPUT_UNGROUNDED:")
+        for finding in _findings(report, CheckName.PROVENANCE)
+    )
+
+
+def test_final_output_with_direct_source_is_grounded() -> None:
+    data = _clean_workflow()
+    data["claims"] = []
+    data["artifacts"] = [
+        {
+            "artifact_id": "final-1",
+            "artifact_type": "report",
+            "artifact_role": "FINAL_OUTPUT",
+            "source_refs": ["local-index"],
+        }
+    ]
+
+    report = _verify(data)
+
     assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PASS
     assert report.summary.overall_status is OverallStatus.COMPLETE
+
+
+def test_final_output_with_evidence_to_source_is_grounded() -> None:
+    data = _clean_workflow()
+    data["claims"] = []
+    data["artifacts"] = [
+        {
+            "artifact_id": "final-1",
+            "artifact_type": "report",
+            "artifact_role": "FINAL_OUTPUT",
+            "evidence_refs": ["summary"],
+        }
+    ]
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PASS
+
+
+def test_final_output_with_parent_artifact_to_evidence_to_source_is_grounded() -> None:
+    data = _clean_workflow()
+    data["claims"] = []
+    data["artifacts"] = [
+        {
+            "artifact_id": "intermediate-1",
+            "artifact_type": "checkpoint",
+            "artifact_role": "INTERMEDIATE",
+            "evidence_refs": ["summary"],
+        },
+        {
+            "artifact_id": "final-1",
+            "artifact_type": "report",
+            "artifact_role": "FINAL_OUTPUT",
+            "parent_artifact_refs": ["intermediate-1"],
+        },
+    ]
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PASS
+
+
+def test_final_output_with_sourceless_evidence_is_partial() -> None:
+    data = _clean_workflow()
+    data["claims"] = []
+    evidence = data["evidence"]
+    assert isinstance(evidence, list)
+    evidence.append({"evidence_id": "sourceless"})
+    data["artifacts"] = [
+        {
+            "artifact_id": "final-1",
+            "artifact_type": "report",
+            "artifact_role": "FINAL_OUTPUT",
+            "evidence_refs": ["sourceless"],
+        }
+    ]
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PARTIAL
+    assert any(
+        finding.message.startswith("PROV_FINAL_OUTPUT_UNGROUNDED:")
+        for finding in _findings(report, CheckName.PROVENANCE)
+    )
+
+
+def test_claim_with_sourceless_evidence_is_not_provenance_pass() -> None:
+    data = _clean_workflow()
+    evidence = data["evidence"]
+    assert isinstance(evidence, list)
+    evidence.append({"evidence_id": "sourceless"})
+    _nested(data, "claims", 0)["evidence_refs"] = ["sourceless"]
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PARTIAL
+    assert any(
+        finding.message.startswith("PROV_CLAIM_UNGROUNDED:")
+        for finding in _findings(report, CheckName.PROVENANCE)
+    )
+
+
+def test_claim_with_parent_evidence_path_to_source_is_grounded() -> None:
+    data = _clean_workflow()
+    _nested(data, "claims", 0)["evidence_refs"] = ["summary"]
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PASS
+
+
+@pytest.mark.parametrize("role", ["INTERMEDIATE", "UNKNOWN"])
+def test_non_final_artifacts_without_claims_are_not_evaluated(role: str) -> None:
+    data = _clean_workflow()
+    data["claims"] = []
+    data["artifacts"] = [
+        {
+            "artifact_id": "not-final",
+            "artifact_type": "checkpoint",
+            "artifact_role": role,
+            "produced_by_event": "search",
+        }
+    ]
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.NOT_EVALUATED
+
+
+def test_produced_by_event_never_counts_as_final_output_grounding() -> None:
+    data = _clean_workflow()
+    data["claims"] = []
+    data["artifacts"] = [
+        {
+            "artifact_id": "final-1",
+            "artifact_type": "report",
+            "artifact_role": "FINAL_OUTPUT",
+            "produced_by_event": "search",
+        }
+    ]
+
+    report = _verify(data)
+    findings = _findings(report, CheckName.PROVENANCE)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PARTIAL
+    assert len(findings) == 1
+    assert findings[0].message.startswith("PROV_FINAL_OUTPUT_UNGROUNDED:")
 
 
 def test_executed_event_without_observation_or_error_is_partial_audit() -> None:

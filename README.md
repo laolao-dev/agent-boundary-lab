@@ -111,6 +111,13 @@ external schema-fit studies:
   checkpoints, critiques, reports, and intermediate outputs. They do not embed
   report bodies or create storage, truth verification, or a workflow engine.
 
+Artifacts also have a narrow `artifact_role`: `FINAL_OUTPUT`, `INTERMEDIATE`, or
+`UNKNOWN` (the default when omitted). Claims and `FINAL_OUTPUT` artifacts are
+provenance subjects. A provenance subject is grounded only when its recorded
+evidence or artifact lineage reaches at least one source record. An artifact's
+`produced_by_event` records execution origin but does not establish research
+grounding. `UNKNOWN` is not treated as `INTERMEDIATE` or as a final output.
+
 Source, evidence, claim, event, artifact, and assurance-evidence references are
 checked deterministically. Insufficient provenance linkage produces a partial or
 not-evaluated result rather than a fabricated pass. Claims retain
