@@ -35,4 +35,4 @@ def test_verify_cli_reports_validation_error(
     assert exit_code == 2
     captured = capsys.readouterr()
     assert "WORKFLOW_VALIDATION_ERROR" in captured.err
-    assert "missing required field 'title'" in captured.err
+    assert "missing required field 'events'" in captured.err

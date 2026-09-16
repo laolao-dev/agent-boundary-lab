@@ -7,11 +7,13 @@ from typing import Never
 from agent_boundary_lab.assurance.models import (
     ApprovalDecision,
     ApprovalRecord,
-    AuditRecord,
+    ApprovalRequirement,
+    AssuranceContext,
     Claim,
+    EventAssuranceContext,
     Evidence,
+    ObservedEvent,
     Workflow,
-    WorkflowStep,
 )
 from agent_boundary_lab.models import BoundaryDecision
 
@@ -44,9 +46,34 @@ def _string(value: object, path: str, *, allow_null: bool = False) -> str | None
     return value
 
 
-def _boolean(value: object, path: str) -> bool:
+def _optional_string(data: dict[str, object], key: str, path: str) -> str | None:
+    return _string(data.get(key), f"{path}.{key}", allow_null=True)
+
+
+def _optional_boolean(data: dict[str, object], key: str, path: str) -> bool | None:
+    value = data.get(key)
+    if value is None:
+        return None
     if not isinstance(value, bool):
-        _fail(path, "expected a boolean")
+        _fail(f"{path}.{key}", "expected a boolean or null")
+    return value
+
+
+def _optional_number(data: dict[str, object], key: str, path: str) -> float | None:
+    value = data.get(key)
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or value < 0:
+        _fail(f"{path}.{key}", "expected a non-negative number or null")
+    return float(value)
+
+
+def _optional_integer(data: dict[str, object], key: str, path: str) -> int | None:
+    value = data.get(key)
+    if value is None:
+        return None
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        _fail(f"{path}.{key}", "expected a non-negative integer or null")
     return value
 
 
@@ -58,6 +85,16 @@ def _string_tuple(value: object, path: str) -> tuple[str, ...]:
         assert parsed_value is not None
         parsed.append(parsed_value)
     return tuple(parsed)
+
+
+def _metadata(value: object, path: str) -> dict[str, str]:
+    data = _mapping(value, path)
+    parsed: dict[str, str] = {}
+    for key in sorted(data):
+        item = _string(data[key], f"{path}.{key}")
+        assert item is not None
+        parsed[key] = item
+    return parsed
 
 
 def _required(data: dict[str, object], key: str, path: str) -> object:
@@ -75,11 +112,7 @@ def _reject_unknown(
         _fail(path, f"unknown field(s): {fields}")
 
 
-def _optional_string(data: dict[str, object], key: str, path: str) -> str | None:
-    return _string(data.get(key), f"{path}.{key}", allow_null=True)
-
-
-def _parse_decision(value: object, path: str) -> BoundaryDecision | None:
+def _parse_boundary_decision(value: object, path: str) -> BoundaryDecision | None:
     if value is None:
         return None
     parsed = _string(value, path)
@@ -91,15 +124,23 @@ def _parse_decision(value: object, path: str) -> BoundaryDecision | None:
         _fail(path, f"expected one of: {allowed}, or null")
 
 
+def _parse_approval_requirement(value: object, path: str) -> ApprovalRequirement:
+    if value is None:
+        return ApprovalRequirement.UNKNOWN
+    parsed = _string(value, path)
+    assert parsed is not None
+    try:
+        return ApprovalRequirement(parsed)
+    except ValueError:
+        allowed = ", ".join(item.value for item in ApprovalRequirement)
+        _fail(path, f"expected one of: {allowed}, or null")
+
+
 def _parse_approval(value: object, path: str) -> ApprovalRecord | None:
     if value is None:
         return None
     data = _mapping(value, path)
-    _reject_unknown(
-        data,
-        frozenset({"approval_id", "decision", "evidence_refs"}),
-        path,
-    )
+    _reject_unknown(data, frozenset({"approval_id", "decision", "evidence_refs"}), path)
     approval_id = _string(_required(data, "approval_id", path), f"{path}.approval_id")
     decision_value = _string(_required(data, "decision", path), f"{path}.decision")
     assert approval_id is not None and decision_value is not None
@@ -117,78 +158,91 @@ def _parse_approval(value: object, path: str) -> ApprovalRecord | None:
     )
 
 
-def _parse_audit(value: object, path: str) -> AuditRecord | None:
-    if value is None:
-        return None
-    data = _mapping(value, path)
-    _reject_unknown(data, frozenset({"action", "decision", "outcome"}), path)
-    return AuditRecord(
-        action=_optional_string(data, "action", path),
-        decision=_optional_string(data, "decision", path),
-        outcome=_optional_string(data, "outcome", path),
-    )
-
-
-def _parse_step(value: object, path: str) -> WorkflowStep:
+def _parse_event(value: object, path: str) -> ObservedEvent:
     data = _mapping(value, path)
     _reject_unknown(
         data,
         frozenset(
             {
-                "step_id",
+                "event_id",
+                "event_type",
                 "action",
                 "tool",
-                "governance_decision",
-                "dispatched",
+                "control_flow_decision",
+                "executed",
                 "evidence_refs",
-                "approval_required",
-                "approval_record",
-                "audit_record",
+                "observation",
+                "timestamp",
+                "error",
+                "latency_ms",
+                "sequence",
+                "question_ref",
+                "query",
+                "metadata",
             }
         ),
         path,
     )
-    step_id = _string(_required(data, "step_id", path), f"{path}.step_id")
-    action = _string(_required(data, "action", path), f"{path}.action")
-    assert step_id is not None and action is not None
-    return WorkflowStep(
-        step_id=step_id,
-        action=action,
+    event_id = _string(_required(data, "event_id", path), f"{path}.event_id")
+    assert event_id is not None
+    return ObservedEvent(
+        event_id=event_id,
+        event_type=_optional_string(data, "event_type", path),
+        action=_optional_string(data, "action", path),
         tool=_optional_string(data, "tool", path),
-        governance_decision=_parse_decision(
-            data.get("governance_decision"), f"{path}.governance_decision"
-        ),
-        dispatched=_boolean(_required(data, "dispatched", path), f"{path}.dispatched"),
+        control_flow_decision=_optional_string(data, "control_flow_decision", path),
+        executed=_optional_boolean(data, "executed", path),
         evidence_refs=_string_tuple(
             data.get("evidence_refs", []), f"{path}.evidence_refs"
         ),
-        approval_required=_boolean(
-            data.get("approval_required", False), f"{path}.approval_required"
-        ),
-        approval_record=_parse_approval(
-            data.get("approval_record"), f"{path}.approval_record"
-        ),
-        audit_record=_parse_audit(data.get("audit_record"), f"{path}.audit_record"),
+        observation=_optional_string(data, "observation", path),
+        timestamp=_optional_string(data, "timestamp", path),
+        error=_optional_string(data, "error", path),
+        latency_ms=_optional_number(data, "latency_ms", path),
+        sequence=_optional_integer(data, "sequence", path),
+        question_ref=_optional_string(data, "question_ref", path),
+        query=_optional_string(data, "query", path),
+        metadata=_metadata(data.get("metadata", {}), f"{path}.metadata"),
     )
 
 
 def _parse_evidence(value: object, path: str) -> Evidence:
     data = _mapping(value, path)
     _reject_unknown(
-        data, frozenset({"evidence_id", "source", "produced_by_step"}), path
+        data,
+        frozenset(
+            {
+                "evidence_id",
+                "produced_by_event",
+                "source_ref",
+                "parent_evidence_refs",
+                "supporting_text",
+                "question_ref",
+                "metadata",
+            }
+        ),
+        path,
     )
     evidence_id = _string(_required(data, "evidence_id", path), f"{path}.evidence_id")
     assert evidence_id is not None
     return Evidence(
         evidence_id=evidence_id,
-        source=_optional_string(data, "source", path),
-        produced_by_step=_optional_string(data, "produced_by_step", path),
+        produced_by_event=_optional_string(data, "produced_by_event", path),
+        source_ref=_optional_string(data, "source_ref", path),
+        parent_evidence_refs=_string_tuple(
+            data.get("parent_evidence_refs", []), f"{path}.parent_evidence_refs"
+        ),
+        supporting_text=_optional_string(data, "supporting_text", path),
+        question_ref=_optional_string(data, "question_ref", path),
+        metadata=_metadata(data.get("metadata", {}), f"{path}.metadata"),
     )
 
 
 def _parse_claim(value: object, path: str) -> Claim:
     data = _mapping(value, path)
-    _reject_unknown(data, frozenset({"claim_id", "text", "evidence_refs"}), path)
+    _reject_unknown(
+        data, frozenset({"claim_id", "text", "evidence_refs", "question_ref"}), path
+    )
     claim_id = _string(_required(data, "claim_id", path), f"{path}.claim_id")
     text = _string(_required(data, "text", path), f"{path}.text")
     assert claim_id is not None and text is not None
@@ -198,7 +252,58 @@ def _parse_claim(value: object, path: str) -> Claim:
         evidence_refs=_string_tuple(
             _required(data, "evidence_refs", path), f"{path}.evidence_refs"
         ),
+        question_ref=_optional_string(data, "question_ref", path),
     )
+
+
+def _parse_event_assurance(value: object, path: str) -> EventAssuranceContext:
+    data = _mapping(value, path)
+    _reject_unknown(
+        data,
+        frozenset(
+            {
+                "event_id",
+                "governance_decision",
+                "governance_evidence_refs",
+                "policy_ref",
+                "approval_requirement",
+                "approval_record",
+            }
+        ),
+        path,
+    )
+    event_id = _string(_required(data, "event_id", path), f"{path}.event_id")
+    assert event_id is not None
+    return EventAssuranceContext(
+        event_id=event_id,
+        governance_decision=_parse_boundary_decision(
+            data.get("governance_decision"), f"{path}.governance_decision"
+        ),
+        governance_evidence_refs=_string_tuple(
+            data.get("governance_evidence_refs", []),
+            f"{path}.governance_evidence_refs",
+        ),
+        policy_ref=_optional_string(data, "policy_ref", path),
+        approval_requirement=_parse_approval_requirement(
+            data.get("approval_requirement"), f"{path}.approval_requirement"
+        ),
+        approval_record=_parse_approval(
+            data.get("approval_record"), f"{path}.approval_record"
+        ),
+    )
+
+
+def _parse_assurance_context(value: object, path: str) -> AssuranceContext:
+    if value is None:
+        return AssuranceContext()
+    data = _mapping(value, path)
+    _reject_unknown(data, frozenset({"events"}), path)
+    events = tuple(
+        _parse_event_assurance(item, f"{path}.events[{index}]")
+        for index, item in enumerate(_list(data.get("events", []), f"{path}.events"))
+    )
+    _require_unique(tuple(item.event_id for item in events), f"{path}.events")
+    return AssuranceContext(events=events)
 
 
 def _require_unique(values: tuple[str, ...], path: str) -> None:
@@ -212,22 +317,31 @@ def parse_workflow(value: object) -> Workflow:
     data = _mapping(value, "workflow")
     _reject_unknown(
         data,
-        frozenset({"workflow_id", "title", "steps", "evidence", "claims"}),
+        frozenset(
+            {
+                "workflow_id",
+                "title",
+                "research_goal",
+                "events",
+                "evidence",
+                "claims",
+                "assurance_context",
+            }
+        ),
         "workflow",
     )
     workflow_id = _string(
         _required(data, "workflow_id", "workflow"), "workflow.workflow_id"
     )
-    title = _string(_required(data, "title", "workflow"), "workflow.title")
-    assert workflow_id is not None and title is not None
-    steps = tuple(
-        _parse_step(item, f"workflow.steps[{index}]")
+    assert workflow_id is not None
+    events = tuple(
+        _parse_event(item, f"workflow.events[{index}]")
         for index, item in enumerate(
-            _list(_required(data, "steps", "workflow"), "workflow.steps")
+            _list(_required(data, "events", "workflow"), "workflow.events")
         )
     )
-    if not steps:
-        _fail("workflow.steps", "expected at least one step")
+    if not events:
+        _fail("workflow.events", "expected at least one event")
     evidence = tuple(
         _parse_evidence(item, f"workflow.evidence[{index}]")
         for index, item in enumerate(
@@ -240,15 +354,20 @@ def parse_workflow(value: object) -> Workflow:
             _list(_required(data, "claims", "workflow"), "workflow.claims")
         )
     )
-    _require_unique(tuple(step.step_id for step in steps), "workflow.steps")
+    assurance_context = _parse_assurance_context(
+        data.get("assurance_context"), "workflow.assurance_context"
+    )
+    _require_unique(tuple(event.event_id for event in events), "workflow.events")
     _require_unique(tuple(item.evidence_id for item in evidence), "workflow.evidence")
     _require_unique(tuple(claim.claim_id for claim in claims), "workflow.claims")
     return Workflow(
         workflow_id=workflow_id,
-        title=title,
-        steps=steps,
+        title=_optional_string(data, "title", "workflow"),
+        research_goal=_optional_string(data, "research_goal", "workflow"),
+        events=events,
         evidence=evidence,
         claims=claims,
+        assurance_context=assurance_context,
     )
 
 

@@ -1,6 +1,6 @@
-"""Data models for the v0.2 workflow-assurance vertical slice."""
+"""Data models for the v0.2 workflow-assurance development preview."""
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from enum import Enum
 
 from agent_boundary_lab.models import BoundaryDecision
@@ -29,6 +29,7 @@ class CheckStatus(str, Enum):
     PASS = "PASS"
     PARTIAL = "PARTIAL"
     FAIL = "FAIL"
+    NOT_EVALUATED = "NOT_EVALUATED"
 
 
 class OverallStatus(str, Enum):
@@ -45,6 +46,14 @@ class ApprovalDecision(str, Enum):
     REJECTED = "REJECTED"
 
 
+class ApprovalRequirement(str, Enum):
+    """Whether an assurance policy expects human approval for an event."""
+
+    REQUIRED = "REQUIRED"
+    NOT_REQUIRED = "NOT_REQUIRED"
+    UNKNOWN = "UNKNOWN"
+
+
 @dataclass(frozen=True)
 class ApprovalRecord:
     """Structured approval evidence; it does not authenticate a person."""
@@ -55,36 +64,37 @@ class ApprovalRecord:
 
 
 @dataclass(frozen=True)
-class AuditRecord:
-    """Minimum audit fields required for an important workflow step."""
+class ObservedEvent:
+    """Facts observed in a workflow trace, without assurance judgments."""
 
-    action: str | None
-    decision: str | None
-    outcome: str | None
-
-
-@dataclass(frozen=True)
-class WorkflowStep:
-    """One action and its governance, dispatch, approval, and audit evidence."""
-
-    step_id: str
-    action: str
-    tool: str | None
-    governance_decision: BoundaryDecision | None
-    dispatched: bool
-    evidence_refs: tuple[str, ...]
-    approval_required: bool
-    approval_record: ApprovalRecord | None
-    audit_record: AuditRecord | None
+    event_id: str
+    event_type: str | None = None
+    action: str | None = None
+    tool: str | None = None
+    control_flow_decision: str | None = None
+    executed: bool | None = None
+    evidence_refs: tuple[str, ...] = ()
+    observation: str | None = None
+    timestamp: str | None = None
+    error: str | None = None
+    latency_ms: float | None = None
+    sequence: int | None = None
+    question_ref: str | None = None
+    query: str | None = None
+    metadata: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
 class Evidence:
-    """Identifier-level evidence lineage for a workflow output."""
+    """Research evidence with separate source and parent-evidence lineage."""
 
     evidence_id: str
-    source: str | None
-    produced_by_step: str | None
+    produced_by_event: str | None = None
+    source_ref: str | None = None
+    parent_evidence_refs: tuple[str, ...] = ()
+    supporting_text: str | None = None
+    question_ref: str | None = None
+    metadata: dict[str, str] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -94,6 +104,26 @@ class Claim:
     claim_id: str
     text: str
     evidence_refs: tuple[str, ...]
+    question_ref: str | None = None
+
+
+@dataclass(frozen=True)
+class EventAssuranceContext:
+    """Policy and review judgments associated with one observed event."""
+
+    event_id: str
+    governance_decision: BoundaryDecision | None = None
+    governance_evidence_refs: tuple[str, ...] = ()
+    policy_ref: str | None = None
+    approval_requirement: ApprovalRequirement = ApprovalRequirement.UNKNOWN
+    approval_record: ApprovalRecord | None = None
+
+
+@dataclass(frozen=True)
+class AssuranceContext:
+    """Optional assurance judgments, kept separate from observed facts."""
+
+    events: tuple[EventAssuranceContext, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -101,10 +131,12 @@ class Workflow:
     """The minimal workflow input accepted by ``abl verify``."""
 
     workflow_id: str
-    title: str
-    steps: tuple[WorkflowStep, ...]
+    events: tuple[ObservedEvent, ...]
     evidence: tuple[Evidence, ...]
     claims: tuple[Claim, ...]
+    title: str | None = None
+    research_goal: str | None = None
+    assurance_context: AssuranceContext = AssuranceContext()
 
 
 @dataclass(frozen=True)
@@ -117,7 +149,7 @@ class Finding:
     message: str
     evidence_refs: tuple[str, ...]
     remediation_hint: str
-    step_id: str | None = None
+    event_id: str | None = None
     claim_id: str | None = None
 
 

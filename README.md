@@ -86,9 +86,23 @@ fixture and writes deterministic evidence to
 ## v0.2 workflow assurance development preview
 
 The alpha v0.2 vertical slice adds deterministic, workflow-level checks for
-governance, evidence lineage, structured human-review records, and audit
-completeness. It implements only these current checks and does not authenticate
-reviewers, verify research content, or provide a general trust score.
+governance, evidence lineage, structured human-review records, and observed-event
+audit completeness. Its minimal schema keeps observed workflow facts separate
+from optional assurance context: a trace can record events, evidence, claims,
+control-flow decisions, and outcomes without inventing an ABL governance or
+approval decision.
+
+Approval requirements in assurance context are explicitly `REQUIRED`,
+`NOT_REQUIRED`, or `UNKNOWN`. Missing governance or approval context produces a
+`NOT_EVALUATED` check, never a fabricated pass or failure, and any
+`NOT_EVALUATED` check keeps the overall report `INCOMPLETE`. Evidence keeps
+`source_ref` separate from `parent_evidence_refs`; claims retain identifier-level
+evidence links but ABL does not validate whether claim text is true.
+
+The checked-in `tests/fixtures/external_style_workflow.json` is a sanitized,
+manually authored synthetic structural fixture. It reflects only schema
+characteristics observed in the first external fit study; it is not a copied
+third-party trace and no production adapter or importer is included.
 
 Run the intentionally incomplete local example with no external API calls:
 
@@ -97,7 +111,8 @@ uv run abl verify examples/research_workflow.json
 ```
 
 The command writes `artifacts/assurance_report.json`. Exit code `0` means every
-current check passed, `1` means the report is `INCOMPLETE`, and `2` means the
+current check passed. Exit code `1` means the report is `INCOMPLETE`, including
+when a check is `PARTIAL`, `FAIL`, or `NOT_EVALUATED`. Exit code `2` means the
 workflow input could not be validated.
 
 ## Architecture in v0.1

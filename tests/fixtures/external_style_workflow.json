@@ -1,0 +1,61 @@
+{
+  "workflow_id": "synthetic_external_style_fixture",
+  "title": "Synthetic external-style research trace",
+  "research_goal": "Compare two local fixture records without governance assumptions.",
+  "events": [
+    {
+      "event_id": "trace_event_001",
+      "event_type": "research_turn",
+      "control_flow_decision": "replan",
+      "executed": true,
+      "evidence_refs": ["evidence_001"],
+      "observation": "One synthetic fixture record was selected.",
+      "timestamp": "2026-01-01T00:00:00Z",
+      "latency_ms": 12,
+      "sequence": 1,
+      "question_ref": "question_001",
+      "query": "synthetic bounded query",
+      "metadata": {
+        "fixture_notice": "Synthetic structural fixture; not a copied third-party trace."
+      }
+    },
+    {
+      "event_id": "trace_event_002",
+      "event_type": "research_turn",
+      "control_flow_decision": "complete_question",
+      "executed": true,
+      "evidence_refs": ["evidence_002"],
+      "observation": "A second synthetic fixture record was selected.",
+      "timestamp": "2026-01-01T00:00:01Z",
+      "latency_ms": 9,
+      "sequence": 2,
+      "question_ref": "question_001",
+      "query": "synthetic comparison query"
+    }
+  ],
+  "evidence": [
+    {
+      "evidence_id": "evidence_001",
+      "produced_by_event": "trace_event_001",
+      "source_ref": "fixture-source:alpha",
+      "supporting_text": "Synthetic support for the first record.",
+      "question_ref": "question_001"
+    },
+    {
+      "evidence_id": "evidence_002",
+      "produced_by_event": "trace_event_002",
+      "source_ref": "fixture-source:beta",
+      "parent_evidence_refs": ["evidence_001"],
+      "supporting_text": "Synthetic support for the comparison.",
+      "question_ref": "question_001"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "claim_001",
+      "text": "The two synthetic records contain different fixture values.",
+      "evidence_refs": ["evidence_001", "evidence_002"],
+      "question_ref": "question_001"
+    }
+  ]
+}

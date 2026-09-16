@@ -1,19 +1,18 @@
 import json
 import re
 from dataclasses import asdict
+from pathlib import Path
 
 import pytest
 
 from agent_boundary_lab.assurance.models import (
+    ApprovalRequirement,
     CheckName,
     CheckStatus,
     OverallStatus,
     Severity,
 )
-from agent_boundary_lab.assurance.schema import (
-    WorkflowValidationError,
-    parse_workflow,
-)
+from agent_boundary_lab.assurance.schema import WorkflowValidationError, parse_workflow
 from agent_boundary_lab.assurance.verifier import verify_workflow
 
 
@@ -21,52 +20,39 @@ def _clean_workflow() -> dict[str, object]:
     return {
         "workflow_id": "clean_review",
         "title": "Clean literature review",
-        "steps": [
+        "research_goal": "Review a bounded local corpus.",
+        "events": [
             {
-                "step_id": "search",
+                "event_id": "search",
+                "event_type": "search",
                 "action": "search papers",
                 "tool": "local_index",
-                "governance_decision": "ALLOW",
-                "dispatched": True,
+                "executed": True,
                 "evidence_refs": ["search_results"],
-                "approval_required": False,
-                "approval_record": None,
-                "audit_record": {
-                    "action": "search papers",
-                    "decision": "ALLOW",
-                    "outcome": "results returned",
-                },
+                "observation": "results returned",
+                "sequence": 1,
             },
             {
-                "step_id": "send",
+                "event_id": "send",
+                "event_type": "delivery",
                 "action": "send summary",
                 "tool": "external_send",
-                "governance_decision": "REQUIRE_APPROVAL",
-                "dispatched": True,
+                "executed": True,
                 "evidence_refs": ["summary"],
-                "approval_required": True,
-                "approval_record": {
-                    "approval_id": "approval-1",
-                    "decision": "APPROVED",
-                    "evidence_refs": ["summary"],
-                },
-                "audit_record": {
-                    "action": "send summary",
-                    "decision": "REQUIRE_APPROVAL",
-                    "outcome": "sent after approval",
-                },
+                "observation": "sent after approval",
+                "sequence": 2,
             },
         ],
         "evidence": [
             {
                 "evidence_id": "search_results",
-                "source": "local:index-query-1",
-                "produced_by_step": "search",
+                "source_ref": "local:index-query-1",
+                "produced_by_event": "search",
             },
             {
                 "evidence_id": "summary",
-                "source": "search_results",
-                "produced_by_step": "search",
+                "parent_evidence_refs": ["search_results"],
+                "produced_by_event": "search",
             },
         ],
         "claims": [
@@ -74,13 +60,57 @@ def _clean_workflow() -> dict[str, object]:
                 "claim_id": "claim-1",
                 "text": "The search returned a bounded result.",
                 "evidence_refs": ["search_results"],
+                "question_ref": "question-1",
             }
         ],
+        "assurance_context": {
+            "events": [
+                {
+                    "event_id": "search",
+                    "governance_decision": "ALLOW",
+                    "policy_ref": "fixture-policy",
+                    "approval_requirement": "NOT_REQUIRED",
+                },
+                {
+                    "event_id": "send",
+                    "governance_decision": "REQUIRE_APPROVAL",
+                    "policy_ref": "fixture-policy",
+                    "approval_requirement": "REQUIRED",
+                    "approval_record": {
+                        "approval_id": "approval-1",
+                        "decision": "APPROVED",
+                        "evidence_refs": ["summary"],
+                    },
+                },
+            ]
+        },
     }
+
+
+def _observed_only_workflow() -> dict[str, object]:
+    data = _clean_workflow()
+    data.pop("assurance_context")
+    return data
+
+
+def _event_only_workflow() -> dict[str, object]:
+    data = _clean_workflow()
+    data["evidence"] = []
+    data["claims"] = []
+    for index in range(2):
+        _nested(data, "events", index)["evidence_refs"] = []
+    _nested(data, "assurance_context", "events", 1, "approval_record")[
+        "evidence_refs"
+    ] = []
+    return data
 
 
 def _verify(data: dict[str, object]):
     return verify_workflow(parse_workflow(data), generated_at="2026-01-01T00:00:00Z")
+
+
+def _check(report, check: CheckName):
+    return next(result for result in report.checks if result.check is check)
 
 
 def _findings(report, check: CheckName):
@@ -97,9 +127,7 @@ def _list_value(value: object, index: int) -> object:
     return value[index]
 
 
-def _nested_object(
-    data: dict[str, object], path: tuple[str | int, ...]
-) -> dict[str, object]:
+def _nested(data: dict[str, object], *path: str | int) -> dict[str, object]:
     current: object = data
     for part in path:
         if isinstance(part, str):
@@ -119,30 +147,93 @@ def test_clean_workflow_is_complete() -> None:
     assert all(result.status is CheckStatus.PASS for result in report.checks)
 
 
-def test_missing_claim_evidence_produces_finding() -> None:
+def test_workflow_without_governance_parses_observed_facts_honestly() -> None:
+    workflow = parse_workflow(_observed_only_workflow())
+
+    assert workflow.events[0].executed is True
+    assert workflow.events[0].action == "search papers"
+    assert workflow.assurance_context.events == ()
+
+
+def test_missing_governance_context_is_neither_pass_nor_fail() -> None:
+    report = _verify(_observed_only_workflow())
+
+    assert _check(report, CheckName.GOVERNANCE).status is CheckStatus.NOT_EVALUATED
+    assert report.summary.overall_status is OverallStatus.INCOMPLETE
+
+
+def test_missing_governance_does_not_create_fabricated_failure() -> None:
+    report = _verify(_observed_only_workflow())
+
+    assert _check(report, CheckName.GOVERNANCE).status is not CheckStatus.FAIL
+    assert _findings(report, CheckName.GOVERNANCE) == ()
+
+
+def test_approval_unknown_is_supported_and_not_not_required() -> None:
+    data = _observed_only_workflow()
+    data["assurance_context"] = {"events": [{"event_id": "search"}]}
+
+    workflow = parse_workflow(data)
+    context = workflow.assurance_context.events[0]
+    report = verify_workflow(workflow, generated_at="fixed")
+
+    assert context.approval_requirement is ApprovalRequirement.UNKNOWN
+    assert context.approval_requirement is not ApprovalRequirement.NOT_REQUIRED
+    assert _check(report, CheckName.HUMAN_REVIEW).status is CheckStatus.NOT_EVALUATED
+
+
+def test_source_and_parent_evidence_references_remain_distinct() -> None:
+    workflow = parse_workflow(_clean_workflow())
+
+    source, derived = workflow.evidence
+    assert source.source_ref == "local:index-query-1"
+    assert source.parent_evidence_refs == ()
+    assert derived.source_ref is None
+    assert derived.parent_evidence_refs == ("search_results",)
+
+
+def test_claim_evidence_linkage_still_produces_a_finding() -> None:
     data = _clean_workflow()
-    data["claims"][0]["evidence_refs"] = []  # type: ignore[index]
+    _nested(data, "claims", 0)["evidence_refs"] = ["missing"]
 
     findings = _findings(_verify(data), CheckName.PROVENANCE)
 
-    assert len(findings) == 1
-    assert findings[0].claim_id == "claim-1"
-    assert "does not reference" in findings[0].message
+    assert any(finding.claim_id == "claim-1" for finding in findings)
+    assert any(finding.evidence_refs == ("missing",) for finding in findings)
 
 
-def test_dangling_evidence_reference_produces_finding() -> None:
+def test_control_flow_decision_is_not_governance() -> None:
+    data = _observed_only_workflow()
+    _nested(data, "events", 0)["control_flow_decision"] = "replan"
+
+    workflow = parse_workflow(data)
+    report = verify_workflow(workflow, generated_at="fixed")
+
+    assert workflow.events[0].control_flow_decision == "replan"
+    assert _check(report, CheckName.GOVERNANCE).status is CheckStatus.NOT_EVALUATED
+
+
+def test_audit_completeness_is_evaluated_without_governance() -> None:
+    report = _verify(_observed_only_workflow())
+
+    assert _check(report, CheckName.AUDIT).status is CheckStatus.PASS
+
+
+def test_external_style_fixture_maps_without_invention() -> None:
+    fixture = Path("tests/fixtures/external_style_workflow.json")
+    workflow = parse_workflow(json.loads(fixture.read_text(encoding="utf-8")))
+    report = verify_workflow(workflow, generated_at="fixed")
+
+    assert workflow.assurance_context.events == ()
+    assert _check(report, CheckName.GOVERNANCE).status is CheckStatus.NOT_EVALUATED
+    assert _check(report, CheckName.HUMAN_REVIEW).status is CheckStatus.NOT_EVALUATED
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PASS
+    assert _check(report, CheckName.AUDIT).status is CheckStatus.PASS
+
+
+def test_deny_executed_is_high() -> None:
     data = _clean_workflow()
-    data["claims"][0]["evidence_refs"] = ["missing"]  # type: ignore[index]
-
-    findings = _findings(_verify(data), CheckName.PROVENANCE)
-
-    assert findings[0].evidence_refs == ("missing",)
-    assert "does not exist" in findings[0].message
-
-
-def test_deny_dispatched_is_high() -> None:
-    data = _clean_workflow()
-    data["steps"][0]["governance_decision"] = "DENY"  # type: ignore[index]
+    _nested(data, "assurance_context", "events", 0)["governance_decision"] = "DENY"
 
     findings = _findings(_verify(data), CheckName.GOVERNANCE)
 
@@ -150,88 +241,111 @@ def test_deny_dispatched_is_high() -> None:
     assert any("DENY" in finding.message for finding in findings)
 
 
-def test_require_approval_without_approval_dispatched_is_high() -> None:
+@pytest.mark.parametrize(
+    ("decision", "executed", "expected_status"),
+    [
+        ("DENY", True, CheckStatus.FAIL),
+        ("DENY", False, CheckStatus.PASS),
+        ("DENY", None, CheckStatus.PARTIAL),
+        ("REQUIRE_APPROVAL", None, CheckStatus.PARTIAL),
+    ],
+)
+def test_restrictive_governance_requires_known_execution_outcome(
+    decision: str, executed: bool | None, expected_status: CheckStatus
+) -> None:
     data = _clean_workflow()
-    data["steps"][1]["approval_record"] = None  # type: ignore[index]
-
-    report = _verify(data)
-
-    governance = _findings(report, CheckName.GOVERNANCE)
-    human_review = _findings(report, CheckName.HUMAN_REVIEW)
-    assert governance[0].severity is Severity.HIGH
-    assert human_review[0].severity is Severity.HIGH
-
-
-def test_rejected_approval_without_dispatch_satisfies_human_review() -> None:
-    data = _clean_workflow()
-    send = _nested_object(data, ("steps", 1))
-    approval = _nested_object(data, ("steps", 1, "approval_record"))
-    send["dispatched"] = False
-    approval["decision"] = "REJECTED"
-
-    report = _verify(data)
-    human_review = next(
-        result for result in report.checks if result.check is CheckName.HUMAN_REVIEW
+    index = 0 if decision == "DENY" else 1
+    _nested(data, "events", index)["executed"] = executed
+    _nested(data, "assurance_context", "events", index)["governance_decision"] = (
+        decision
     )
 
-    assert human_review.status is CheckStatus.PASS
-    assert _findings(report, CheckName.HUMAN_REVIEW) == ()
+    report = _verify(data)
+
+    assert _check(report, CheckName.GOVERNANCE).status is expected_status
+    if executed is None:
+        assert _findings(report, CheckName.GOVERNANCE) == ()
+        assert report.summary.overall_status is OverallStatus.INCOMPLETE
 
 
-def test_rejected_approval_with_dispatch_is_high() -> None:
+def test_require_approval_without_record_is_high_when_executed() -> None:
     data = _clean_workflow()
-    approval = _nested_object(data, ("steps", 1, "approval_record"))
-    approval["decision"] = "REJECTED"
+    _nested(data, "assurance_context", "events", 1)["approval_record"] = None
 
-    findings = _findings(_verify(data), CheckName.HUMAN_REVIEW)
+    report = _verify(data)
 
-    assert len(findings) == 1
-    assert findings[0].severity is Severity.HIGH
-    assert "REJECTED" in findings[0].message
+    assert _findings(report, CheckName.GOVERNANCE)[0].severity is Severity.HIGH
+    assert _findings(report, CheckName.HUMAN_REVIEW)[0].severity is Severity.HIGH
 
 
-def test_missing_audit_record_produces_finding() -> None:
+def test_rejected_approval_without_execution_passes_human_review() -> None:
     data = _clean_workflow()
-    data["steps"][0]["audit_record"] = None  # type: ignore[index]
+    _nested(data, "events", 1)["executed"] = False
+    _nested(data, "assurance_context", "events", 1, "approval_record")["decision"] = (
+        "REJECTED"
+    )
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.HUMAN_REVIEW).status is CheckStatus.PASS
+
+
+@pytest.mark.parametrize("requirement", ["REQUIRED", "NOT_REQUIRED", "UNKNOWN"])
+@pytest.mark.parametrize("executed", [True, False, None])
+def test_rejected_approval_is_checked_independent_of_requirement(
+    requirement: str, executed: bool | None
+) -> None:
+    data = _clean_workflow()
+    _nested(data, "events", 1)["executed"] = executed
+    context = _nested(data, "assurance_context", "events", 1)
+    context["approval_requirement"] = requirement
+    _nested(data, "assurance_context", "events", 1, "approval_record")["decision"] = (
+        "REJECTED"
+    )
+
+    report = _verify(data)
+    findings = _findings(report, CheckName.HUMAN_REVIEW)
+    status = _check(report, CheckName.HUMAN_REVIEW).status
+
+    if executed is True:
+        assert status is CheckStatus.FAIL
+        assert any(finding.severity is Severity.HIGH for finding in findings)
+    elif executed is False:
+        assert findings == ()
+        assert status is (
+            CheckStatus.PARTIAL if requirement == "UNKNOWN" else CheckStatus.PASS
+        )
+    else:
+        assert findings == ()
+        assert status is not CheckStatus.PASS
+
+
+def test_empty_provenance_surface_is_not_evaluated_or_complete() -> None:
+    report = _verify(_event_only_workflow())
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.NOT_EVALUATED
+    assert _findings(report, CheckName.PROVENANCE) == ()
+    assert report.summary.overall_status is OverallStatus.INCOMPLETE
+
+
+def test_valid_evidence_lineage_without_claims_can_pass_provenance() -> None:
+    data = _clean_workflow()
+    data["claims"] = []
+
+    report = _verify(data)
+
+    assert _check(report, CheckName.PROVENANCE).status is CheckStatus.PASS
+    assert report.summary.overall_status is OverallStatus.COMPLETE
+
+
+def test_executed_event_without_observation_or_error_is_partial_audit() -> None:
+    data = _clean_workflow()
+    _nested(data, "events", 0)["observation"] = None
 
     findings = _findings(_verify(data), CheckName.AUDIT)
 
     assert len(findings) == 1
-    assert findings[0].step_id == "search"
-
-
-def test_audit_action_mismatch_produces_finding() -> None:
-    data = _clean_workflow()
-    audit = _nested_object(data, ("steps", 0, "audit_record"))
-    audit["action"] = "different action"
-
-    findings = _findings(_verify(data), CheckName.AUDIT)
-
-    assert len(findings) == 1
-    assert "action does not match" in findings[0].message
-
-
-def test_audit_decision_mismatch_produces_finding() -> None:
-    data = _clean_workflow()
-    audit = _nested_object(data, ("steps", 0, "audit_record"))
-    audit["decision"] = "DENY"
-
-    findings = _findings(_verify(data), CheckName.AUDIT)
-
-    assert len(findings) == 1
-    assert "decision does not match" in findings[0].message
-
-
-def test_dangling_step_evidence_reference_produces_finding() -> None:
-    data = _clean_workflow()
-    step = _nested_object(data, ("steps", 0))
-    step["evidence_refs"] = ["missing"]
-
-    findings = _findings(_verify(data), CheckName.PROVENANCE)
-
-    assert len(findings) == 1
-    assert findings[0].step_id == "search"
-    assert findings[0].evidence_refs == ("missing",)
+    assert findings[0].event_id == "search"
 
 
 def test_repeated_run_is_semantically_deterministic() -> None:
@@ -248,18 +362,13 @@ def test_repeated_run_is_semantically_deterministic() -> None:
     ("path", "field", "expected_path"),
     [
         ((), "unexpected_workflow", "workflow"),
-        (("steps", 0), "approval_requred", "workflow.steps[0]"),
-        (("evidence", 0), "unexpected_evidence", "workflow.evidence[0]"),
+        (("events", 0), "approval_required", "workflow.events[0]"),
+        (("evidence", 0), "source", "workflow.evidence[0]"),
         (("claims", 0), "unexpected_claim", "workflow.claims[0]"),
         (
-            ("steps", 1, "approval_record"),
-            "unexpected_approval",
-            "workflow.steps[1].approval_record",
-        ),
-        (
-            ("steps", 0, "audit_record"),
-            "unexpected_audit",
-            "workflow.steps[0].audit_record",
+            ("assurance_context", "events", 0),
+            "control_flow_decision",
+            "workflow.assurance_context.events[0]",
         ),
     ],
 )
@@ -267,22 +376,20 @@ def test_unknown_schema_field_is_rejected(
     path: tuple[str | int, ...], field: str, expected_path: str
 ) -> None:
     data = _clean_workflow()
-    _nested_object(data, path)[field] = True
+    _nested(data, *path)[field] = True
 
     with pytest.raises(
-        WorkflowValidationError,
-        match=rf"{re.escape(expected_path)}.*{field}",
+        WorkflowValidationError, match=rf"{re.escape(expected_path)}.*{field}"
     ):
         parse_workflow(data)
 
 
-def test_empty_steps_are_rejected() -> None:
+def test_empty_events_are_rejected() -> None:
     data = _clean_workflow()
-    data["steps"] = []
+    data["events"] = []
 
     with pytest.raises(
-        WorkflowValidationError,
-        match=r"workflow\.steps.*at least one step",
+        WorkflowValidationError, match=r"workflow\.events.*at least one event"
     ):
         parse_workflow(data)
 
@@ -290,8 +397,11 @@ def test_empty_steps_are_rejected() -> None:
 @pytest.mark.parametrize(
     "malformed, expected",
     [
-        ({"workflow_id": "broken"}, "missing required field 'title'"),
-        ({"workflow_id": "broken", "title": "Broken", "steps": {}}, "array"),
+        ({"workflow_id": "broken"}, "missing required field 'events'"),
+        (
+            {"workflow_id": "broken", "events": {}, "evidence": [], "claims": []},
+            "array",
+        ),
     ],
 )
 def test_malformed_workflow_has_clear_error(
