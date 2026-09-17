@@ -133,6 +133,30 @@ def test_root_without_output_has_no_final_artifact(tmp_path: Path) -> None:
     )
 
 
+def test_cli_blank_status_with_completed_root_output_is_final(tmp_path: Path) -> None:
+    rows = _rows()
+    for row in rows:
+        row["status"] = ""
+    workflow = LangSmithTraceAdapter().import_file(
+        _write_rows(tmp_path / "blank-status.jsonl", rows)
+    )
+    final = [
+        artifact
+        for artifact in workflow.artifacts
+        if artifact.artifact_role is ArtifactRole.FINAL_OUTPUT
+    ]
+    assert len(final) == 1
+    assert final[0].produced_by_event == workflow.events[0].event_id
+    assert final[0].source_refs == ()
+    assert final[0].evidence_refs == ()
+    report = verify_workflow(workflow)
+    assert report.summary.overall_status.value == "INCOMPLETE"
+    assert any(
+        check.check.value == "PROVENANCE" and check.status.value != "PASS"
+        for check in report.checks
+    )
+
+
 @pytest.mark.parametrize(
     "root_change", [{"status": "error"}, {"end_time": None}, {"outputs": {}}]
 )

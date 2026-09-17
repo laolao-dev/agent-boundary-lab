@@ -238,7 +238,11 @@ def _event(run: _Run, sequence: int) -> dict[str, Any]:
 
 
 def _has_final_output(run: _Run) -> bool:
-    if run.status != "success" or run.end_time is None or run.error is not None:
+    if (
+        run.status not in (None, "success")
+        or run.end_time is None
+        or run.error is not None
+    ):
         return False
     if run.outputs is None:
         return False
